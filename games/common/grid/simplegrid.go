@@ -3,6 +3,7 @@ package grid
 import (
 	"fmt"
 	"go-get-games/games/common/vector"
+	"strings"
 )
 
 type SimpleGrid[T any] struct {
@@ -62,4 +63,28 @@ func MakeSimpleGrid[T any](width, height int) (*SimpleGrid[T], error) {
 		height: height,
 		data:   make(map[vector.IntVec2]T),
 	}, nil
+}
+
+func MakeSimpleGridFromString(input string) (*SimpleGrid[rune], error) {
+	lines := strings.Split(input, "\n")
+	height := len(lines)
+	var width int
+	for _, line := range lines {
+		if len(line) > width {
+			width = len(line)
+		}
+	}
+	grid, err := MakeSimpleGrid[rune](width, height)
+	if err != nil {
+		return nil, err
+	}
+	for y, line := range lines {
+		for x, val := range line {
+			pos := vector.Of(x, y)
+			if err := grid.Set(pos, val); err != nil {
+				return nil, err
+			}
+		}
+	}
+	return grid, nil
 }

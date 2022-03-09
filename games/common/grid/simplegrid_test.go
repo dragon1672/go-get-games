@@ -150,3 +150,94 @@ func TestGetAndSet(t *testing.T) {
 		})
 	}
 }
+
+func TestMakeFromString(t *testing.T) {
+	tcs := []struct {
+		name    string
+		input   string
+		want    map[vector.IntVec2]rune
+		wantErr bool
+	}{
+		{
+			name:  "Basic X",
+			input: "123",
+			want: map[vector.IntVec2]rune{
+				vector.Of(0, 0): '1',
+				vector.Of(1, 0): '2',
+				vector.Of(2, 0): '3',
+			},
+			wantErr: false,
+		},
+		{
+			name: "Basic Y",
+			input: "" +
+				"1\n" +
+				"2\n" +
+				"3",
+			want: map[vector.IntVec2]rune{
+				vector.Of(0, 0): '1',
+				vector.Of(0, 1): '2',
+				vector.Of(0, 2): '3',
+			},
+			wantErr: false,
+		},
+		{
+			name: "Basic grid",
+			input: "" +
+				"123\n" +
+				"456\n" +
+				"789",
+			want: map[vector.IntVec2]rune{
+				vector.Of(0, 0): '1',
+				vector.Of(1, 1): '5',
+				vector.Of(2, 2): '9',
+			},
+			wantErr: false,
+		},
+		{
+			name: "UnEqual",
+			input: "" +
+				"123\n" +
+				"45\n" +
+				"789",
+			want: map[vector.IntVec2]rune{
+				vector.Of(0, 0): '1',
+				vector.Of(1, 1): '5',
+				vector.Of(2, 2): '9',
+			},
+			wantErr: false,
+		},
+		{
+			name: "Empty Row",
+			input: "" +
+				"123\n" +
+				"\n" +
+				"789",
+			want: map[vector.IntVec2]rune{
+				vector.Of(0, 0): '1',
+				vector.Of(1, 1): 0, // should have default value
+				vector.Of(2, 2): '9',
+			},
+			wantErr: false,
+		},
+		{
+			name:    "Invalid Empty",
+			input:   "",
+			wantErr: true,
+		},
+	}
+	for _, tc := range tcs {
+		t.Run(tc.name, func(t *testing.T) {
+			grid, gotErr := MakeSimpleGridFromString(tc.input)
+			f.Assert(t, gotErr != nil).Eq(tc.wantErr, "should return proper error")
+			for pos, want := range tc.want {
+				got, err := grid.Get(pos)
+				if err != nil {
+					t.Errorf("grid.Get(%v) got err %v want nil", pos, err)
+				} else {
+					f.Assert(t, got).Eq(want, "Got(%v) should return proper value", pos)
+				}
+			}
+		})
+	}
+}

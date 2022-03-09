@@ -10,11 +10,11 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	hello := widget.NewLabel("Hello Fyne!")
+	hello := widget.NewTextGridFromString("ABC\n123")
 	w.SetContent(container.NewVBox(
 		hello,
 		widget.NewButton("Hi!", func() {
-			hello.SetText("Welcome :)")
+			hello.SetCell(1, 1, widget.TextGridCell{Rune: 'r'})
 		}),
 	))
 
