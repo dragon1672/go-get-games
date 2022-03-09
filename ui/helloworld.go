@@ -4,17 +4,28 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"go-get-games/games/common/grid"
+	"go-get-games/games/common/vector"
+	"go-get-games/ui/textui"
+	"math/rand"
 )
 
 func main() {
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	hello := widget.NewTextGridFromString("ABC\n123")
+	g, _ := grid.MakeSimpleGridFromString("" +
+		"123\n" +
+		"456\n" +
+		"789\n" +
+		"")
+	hello := textui.Construct(g)
 	w.SetContent(container.NewVBox(
-		hello,
+		hello.Widget(),
 		widget.NewButton("Hi!", func() {
-			hello.SetCell(1, 1, widget.TextGridCell{Rune: 'r'})
+			randomLetter := rune(rand.Int()%('z'-'a') + 'a')
+			hello.Grid().Set(vector.Of(1, 1), randomLetter)
+			hello.Sync()
 		}),
 	))
 
