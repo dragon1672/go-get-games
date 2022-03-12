@@ -5,10 +5,10 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"go-get-games/games/common/grids"
-	"go-get-games/games/common/grids/gridbuilders"
-	"go-get-games/games/minesweeper/ui/assets"
-	"go-get-games/ui/buttongrid"
+	"github.com/dragon162/go-get-games/games/common/grids"
+	"github.com/dragon162/go-get-games/games/common/grids/gridbuilders"
+	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
+	"github.com/dragon162/go-get-games/ui/buttongrid"
 	"log"
 )
 

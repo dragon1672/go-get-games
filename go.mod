@@ -1,4 +1,4 @@
-module go-get-games
+module github.com/dragon162/go-get-games
 
 go 1.18
 

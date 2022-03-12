@@ -2,8 +2,8 @@ package grids
 
 import (
 	"fmt"
-	"go-get-games/games/common/events"
-	"go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/games/common/events"
+	"github.com/dragon162/go-get-games/games/common/vector"
 )
 
 type gridI interface {

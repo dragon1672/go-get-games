@@ -4,9 +4,9 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"go-get-games/games/common/grids/gridbuilders"
-	"go-get-games/games/common/vector"
-	"go-get-games/ui/textui"
+	"github.com/dragon162/go-get-games/games/common/grids/gridbuilders"
+	"github.com/dragon162/go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/ui/textui"
 	"math/rand"
 )
 

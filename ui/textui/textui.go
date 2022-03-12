@@ -3,8 +3,8 @@ package textui
 import (
 	"bytes"
 	"fyne.io/fyne/v2/widget"
-	"go-get-games/games/common/grids"
-	"go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/games/common/grids"
+	"github.com/dragon162/go-get-games/games/common/vector"
 )
 
 type TextWidgetUi struct {

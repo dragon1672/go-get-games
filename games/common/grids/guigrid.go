@@ -3,9 +3,9 @@ package grids
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
-	"go-get-games/games/common/events"
-	"go-get-games/games/common/vector"
-	"go-get-games/ui/buttongrid"
+	"github.com/dragon162/go-get-games/games/common/events"
+	"github.com/dragon162/go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/ui/buttongrid"
 )
 
 type GuiGrid[T any] struct {

@@ -1,8 +1,8 @@
 package grids
 
 import (
+	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/pellared/fluentassert/f"
-	"go-get-games/games/common/vector"
 	"testing"
 )
 
