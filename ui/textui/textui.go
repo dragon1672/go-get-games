@@ -3,12 +3,12 @@ package textui
 import (
 	"bytes"
 	"fyne.io/fyne/v2/widget"
-	"go-get-games/games/common/grid"
+	"go-get-games/games/common/grids"
 	"go-get-games/games/common/vector"
 )
 
 type TextWidgetUi struct {
-	grid *grid.SimpleGrid[rune]
+	grid *grids.SimpleGrid[rune]
 	widg *widget.TextGrid
 }
 
@@ -18,7 +18,7 @@ func (t *TextWidgetUi) Sync() {
 	var buffer bytes.Buffer
 	for y := 0; y < t.grid.Height(); y++ {
 		for x := 0; x < t.grid.Width(); x++ {
-			if val, err := t.grid.Get(vector.Of(x, y)); err == nil {
+			if val, ok := t.grid.Get(vector.Of(x, y)); ok {
 				buffer.WriteRune(val)
 			}
 		}
@@ -30,11 +30,11 @@ func (t *TextWidgetUi) Sync() {
 func (t *TextWidgetUi) Widget() *widget.TextGrid {
 	return t.widg
 }
-func (t *TextWidgetUi) Grid() *grid.SimpleGrid[rune] {
+func (t *TextWidgetUi) Grid() *grids.SimpleGrid[rune] {
 	return t.grid
 }
 
-func Construct(grid *grid.SimpleGrid[rune]) *TextWidgetUi {
+func Construct(grid *grids.SimpleGrid[rune]) *TextWidgetUi {
 	ret := &TextWidgetUi{
 		grid: grid,
 		widg: widget.NewTextGrid(),

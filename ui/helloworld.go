@@ -4,7 +4,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"go-get-games/games/common/grid"
+	"go-get-games/games/common/grids/gridbuilders"
 	"go-get-games/games/common/vector"
 	"go-get-games/ui/textui"
 	"math/rand"
@@ -14,7 +14,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	g, _ := grid.MakeSimpleGridFromString("" +
+	g, _ := gridbuilders.MakeSimpleGridFromString("" +
 		"123\n" +
 		"456\n" +
 		"789\n" +
