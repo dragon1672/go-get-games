@@ -19,7 +19,7 @@ func channelEmpty[T any](c chan T) bool {
 }
 
 func TestSubscription(t *testing.T) {
-	feed := &Feed[string]{}
+	feed := Make[string]()
 	ch := make(chan string, 1)
 	called := false
 	feed.Subscribe(func(data string) {
@@ -37,7 +37,7 @@ func TestSubscription(t *testing.T) {
 }
 
 func TestUnSubscribe(t *testing.T) {
-	feed := &Feed[string]{}
+	feed := Make[string]()
 	ch1 := make(chan string)
 	ch2 := make(chan string)
 	feed.Subscribe(func(data string) {
@@ -67,7 +67,7 @@ func TestUnSubscribe(t *testing.T) {
 }
 
 func TestSubscriptionInSubscription(t *testing.T) {
-	feed := &Feed[string]{}
+	feed := Make[string]()
 	ch1 := make(chan string)
 	ch2 := make(chan string)
 	called := false
@@ -93,7 +93,7 @@ func TestSubscriptionInSubscription(t *testing.T) {
 }
 
 func TestEmitOnEmit(t *testing.T) {
-	feed := &Feed[string]{}
+	feed := Make[string]()
 	ch := make(chan string, 2)
 	subEmit := true
 	feed.Subscribe(func(data string) {

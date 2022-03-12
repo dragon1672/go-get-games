@@ -1,4 +1,4 @@
-package grid
+package grids
 
 import (
 	"github.com/pellared/fluentassert/f"
@@ -48,11 +48,11 @@ func TestMake(t *testing.T) {
 
 func TestGetAndSet(t *testing.T) {
 	tcs := []struct {
-		name    string
-		grid    func() (*SimpleGrid[string], error)
-		pos     vector.IntVec2
-		want    string
-		wantErr bool
+		name      string
+		grid      func() (*SimpleGrid[string], error)
+		pos       vector.IntVec2
+		want      string
+		wantNotOk bool
 	}{
 		{
 			name: "Basic",
@@ -66,9 +66,9 @@ func TestGetAndSet(t *testing.T) {
 				}
 				return grid, nil
 			},
-			pos:     vector.Of(1, 1),
-			want:    "da value",
-			wantErr: false,
+			pos:       vector.Of(1, 1),
+			want:      "da value",
+			wantNotOk: false,
 		},
 		{
 			name: "multiple entries",
@@ -85,9 +85,9 @@ func TestGetAndSet(t *testing.T) {
 				}
 				return grid, nil
 			},
-			pos:     vector.Of(1, 1),
-			want:    "da value",
-			wantErr: false,
+			pos:       vector.Of(1, 1),
+			want:      "da value",
+			wantNotOk: false,
 		},
 		{
 			name: "overriding value",
@@ -104,9 +104,9 @@ func TestGetAndSet(t *testing.T) {
 				}
 				return grid, nil
 			},
-			pos:     vector.Of(1, 1),
-			want:    "da value now overridden",
-			wantErr: false,
+			pos:       vector.Of(1, 1),
+			want:      "da value now overridden",
+			wantNotOk: false,
 		},
 		{
 			name: "default value",
@@ -120,9 +120,9 @@ func TestGetAndSet(t *testing.T) {
 				}
 				return grid, nil
 			},
-			pos:     vector.Of(1, 1),
-			want:    "",
-			wantErr: false,
+			pos:       vector.Of(1, 1),
+			want:      "",
+			wantNotOk: false,
 		},
 		{
 			name: "invalidPos",
@@ -133,9 +133,9 @@ func TestGetAndSet(t *testing.T) {
 				}
 				return grid, nil
 			},
-			pos:     vector.Of(-1, -1),
-			want:    "",
-			wantErr: true,
+			pos:       vector.Of(-1, -1),
+			want:      "",
+			wantNotOk: true,
 		},
 	}
 	for _, tc := range tcs {
@@ -144,8 +144,8 @@ func TestGetAndSet(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Set setup failed with error %v", err)
 			}
-			got, gotErr := grid.Get(tc.pos)
-			f.Assert(t, gotErr != nil).Eq(tc.wantErr, "should return proper error")
+			got, ok := grid.Get(tc.pos)
+			f.Assert(t, !ok).Eq(tc.wantNotOk, "should return proper error")
 			f.Assert(t, got).Eq(tc.want, "should return proper value")
 		})
 	}
@@ -231,9 +231,9 @@ func TestMakeFromString(t *testing.T) {
 			grid, gotErr := MakeSimpleGridFromString(tc.input)
 			f.Assert(t, gotErr != nil).Eq(tc.wantErr, "should return proper error")
 			for pos, want := range tc.want {
-				got, err := grid.Get(pos)
-				if err != nil {
-					t.Errorf("grid.Get(%v) got err %v want nil", pos, err)
+				got, ok := grid.Get(pos)
+				if !ok {
+					t.Errorf("grid.Get(%v) got ok %v want ok true", pos, ok)
 				} else {
 					f.Assert(t, got).Eq(want, "Got(%v) should return proper value", pos)
 				}

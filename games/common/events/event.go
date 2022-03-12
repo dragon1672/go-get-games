@@ -23,7 +23,9 @@ func (f *Feed[T]) Subscribe(callback func(data T)) *Subscription[T] {
 	}
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	f.subscribers = append([]*Subscription[T]{s}, f.subscribers...)
+	var tmp []*Subscription[T]
+	tmp = f.subscribers // using f.subscribers directly in append doesn't appear to WAI, but this does
+	f.subscribers = append(tmp, s)
 	return s
 }
 
@@ -58,4 +60,8 @@ func (f *Feed[T]) Send(data T) int {
 		}
 	}
 	return count
+}
+
+func Make[T any]() *Feed[T] {
+	return &Feed[T]{mu: sync.Mutex{}}
 }
