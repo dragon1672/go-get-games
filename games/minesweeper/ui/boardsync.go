@@ -1,0 +1,58 @@
+package ui
+
+import (
+	"fyne.io/fyne/v2/theme"
+	"github.com/dragon162/go-get-games/games/minesweeper/game"
+	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
+	"github.com/dragon162/go-get-games/ui/buttongrid"
+)
+
+var (
+	emptyResource  = theme.NewThemedResource(assets.EmptyIcon)
+	bombResource   = theme.NewThemedResource(assets.BombIcon)
+	signalResource = theme.NewThemedResource(assets.SignalIcon)
+	tankResource   = theme.NewThemedResource(assets.TankIcon)
+	targetResource = theme.NewThemedResource(assets.TargetIcon)
+	n0Resource     = theme.NewThemedResource(assets.N0Icon)
+	n1Resource     = theme.NewThemedResource(assets.N1Icon)
+	n2Resource     = theme.NewThemedResource(assets.N2Icon)
+	n3Resource     = theme.NewThemedResource(assets.N3Icon)
+	n4Resource     = theme.NewThemedResource(assets.N4Icon)
+	n5Resource     = theme.NewThemedResource(assets.N5Icon)
+	n6Resource     = theme.NewThemedResource(assets.N6Icon)
+	n7Resource     = theme.NewThemedResource(assets.N7Icon)
+	n8Resource     = theme.NewThemedResource(assets.N8Icon)
+	n9Resource     = theme.NewThemedResource(assets.N9Icon)
+)
+
+var ch2resource = map[game.CellState]*theme.ThemedResource{
+	game.CellBomb:  bombResource,
+	game.CellEmpty: emptyResource,
+	game.CellN0:    n0Resource,
+	game.CellN1:    n1Resource,
+	game.CellN2:    n2Resource,
+	game.CellN3:    n3Resource,
+	game.CellN4:    n4Resource,
+	game.CellN5:    n5Resource,
+	game.CellN6:    n6Resource,
+	game.CellN7:    n7Resource,
+	game.CellN8:    n8Resource,
+	game.CellN9:    n9Resource,
+}
+
+func MakeAndSyncRenderableBoard(g *game.Game) *buttongrid.RenderableBoard {
+	bg := buttongrid.MakeRenderableBoard(g.Width(), g.Height(), emptyResource)
+	g.ChangeEvent.Subscribe(func(data game.ChangeEventData) {
+		if b, ok := bg.GetButton(data.Pos); ok {
+			if i, ok := ch2resource[data.Val]; ok {
+				b.SetIcon(i)
+			}
+		}
+	})
+
+	bg.ClickEvent.Subscribe(func(data buttongrid.ClickEventData) {
+		g.Reveal(data.Pos)
+	})
+
+	return bg
+}

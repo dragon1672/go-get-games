@@ -9,7 +9,7 @@ import (
 )
 
 type GuiGrid[T any] struct {
-	baseGrid
+	BaseGrid
 	simpleGrid *SimpleGrid[T]
 	buttonGrid *buttongrid.RenderableBoard
 	translator func(T) *theme.ThemedResource

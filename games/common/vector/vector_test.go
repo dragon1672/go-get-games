@@ -7,8 +7,8 @@ import (
 
 func TestCreate(t *testing.T) {
 	got := Of(1, 2)
-	f.Assert(t, got.X()).Eq(1, "should return proper value")
-	f.Assert(t, got.Y()).Eq(2, "should return proper value")
+	f.Assert(t, got.X).Eq(1, "should return proper value")
+	f.Assert(t, got.Y).Eq(2, "should return proper value")
 }
 
 func TestAdd(t *testing.T) {

@@ -3,13 +3,11 @@ package buttongrid
 import (
 	"fmt"
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"github.com/dragon162/go-get-games/games/common/events"
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/ui/uibuttons"
-	"image/color"
 )
 
 type Board interface {
@@ -18,46 +16,19 @@ type Board interface {
 }
 
 type ClickEventData struct {
-	pos    vector.IntVec2
-	tapped bool
+	Pos    vector.IntVec2
+	Tapped bool
 }
 
 func (c ClickEventData) String() string {
-	return fmt.Sprintf("{tapped: %v @ %v}", c.tapped, c.pos)
+	return fmt.Sprintf("{Tapped: %v @ %v}", c.Tapped, c.Pos)
 }
 
 type RenderableBoard struct {
-	fyne.WidgetRenderer
 	grid    *fyne.Container
 	buttons map[vector.IntVec2]*uibuttons.Button
 
 	ClickEvent events.Feed[ClickEventData] // notably isn't a pointer so each event gets an independent copy
-}
-
-func (g *RenderableBoard) MinSize() fyne.Size {
-	return g.grid.MinSize()
-}
-
-func (g *RenderableBoard) Layout(size fyne.Size) {
-	g.grid.Layout.Layout(g.grid.Objects, size)
-}
-
-func (g *RenderableBoard) ApplyTheme() {
-}
-
-func (g *RenderableBoard) BackgroundColor() color.Color {
-	return theme.BackgroundColor()
-}
-
-func (g *RenderableBoard) Refresh() {
-	canvas.Refresh(g.grid)
-}
-
-func (g *RenderableBoard) Objects() []fyne.CanvasObject {
-	return []fyne.CanvasObject{g.grid}
-}
-
-func (g *RenderableBoard) Destroy() {
 }
 
 func (g *RenderableBoard) GetButton(pos vector.IntVec2) (*uibuttons.Button, bool) {
@@ -79,8 +50,8 @@ func MakeRenderableBoard(width, height int, defaultCode *theme.ThemedResource) *
 			pos := vector.Of(x, y) // create copy of x/y for lambda
 			b := uibuttons.NewButton("", defaultCode, func(tapped bool) {
 				renderer.ClickEvent.Send(ClickEventData{
-					pos:    pos,
-					tapped: tapped,
+					Pos:    pos,
+					Tapped: tapped,
 				})
 			})
 			renderer.buttons[pos] = b

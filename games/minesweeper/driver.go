@@ -1,34 +1,15 @@
 package minesweeper
 
 import (
-	"fmt"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"github.com/dragon162/go-get-games/games/common/grids"
 	"github.com/dragon162/go-get-games/games/common/grids/gridbuilders"
+	"github.com/dragon162/go-get-games/games/minesweeper/game"
+	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
+	"github.com/dragon162/go-get-games/games/minesweeper/ui"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
-	"github.com/dragon162/go-get-games/ui/buttongrid"
-	"log"
-)
-
-type CellState int64
-
-const (
-	CellUnset CellState = iota
-	CellEmpty
-	CellFlag
-	CellBomb
-	CellN0
-	CellN1
-	CellN2
-	CellN3
-	CellN4
-	CellN5
-	CellN6
-	CellN7
-	CellN8
-	CellN9
 )
 
 var (
@@ -90,13 +71,12 @@ func Drive() {
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	ms, err := MakeMineSweeperBoard()
-	if err != nil {
-		log.Fatal(err)
-	}
-	ms.SubscribeToClicks(func(data buttongrid.ClickEventData) {
-		fmt.Printf("Click Event: %v\n", data)
-	})
+	g := game.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+		"*1 \n" +
+		"22 \n" +
+		"*1 "))
+
+	ms := ui.MakeAndSyncRenderableBoard(g)
 	// https://github.com/fyne-io/examples/ for more examples to poke with
 	w.SetContent(container.NewVBox(
 		ms.CanvasObj(),

@@ -4,6 +4,8 @@ go 1.18
 
 require (
 	fyne.io/fyne/v2 v2.1.3
+	github.com/golang/glog v1.0.0
+	github.com/google/go-cmp v0.5.7
 	github.com/pellared/fluentassert v0.1.0
 )
 
@@ -24,5 +26,6 @@ require (
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
 	golang.org/x/text v0.3.3 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )

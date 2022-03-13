@@ -3,32 +3,29 @@ package vector
 import "fmt"
 
 type IntVec2 struct {
-	x, y int
+	X, Y int
 }
 
-func (v *IntVec2) X() int { return v.x }
-func (v *IntVec2) Y() int { return v.y }
-
 func Of(x, y int) IntVec2 {
-	return IntVec2{x: x, y: y}
+	return IntVec2{X: x, Y: y}
 }
 
 func (v *IntVec2) Add(that IntVec2) IntVec2 {
-	return Of(v.x+that.x, v.y+that.y)
+	return Of(v.X+that.X, v.Y+that.Y)
 }
 
 func (v *IntVec2) Sub(that IntVec2) IntVec2 {
-	return Of(v.x-that.x, v.y-that.y)
+	return Of(v.X-that.X, v.Y-that.Y)
 }
 
 func (v *IntVec2) Mul(scale float64) IntVec2 {
-	return Of(int(float64(v.x)*scale), int(float64(v.y)*scale))
+	return Of(int(float64(v.X)*scale), int(float64(v.Y)*scale))
 }
 
 func (v *IntVec2) LengthSquared() int {
-	return v.x*v.x + v.y*v.y
+	return v.X*v.X + v.Y*v.Y
 }
 
 func (v *IntVec2) String() string {
-	return fmt.Sprintf("{%d,%d}", v.x, v.y)
+	return fmt.Sprintf("{%d,%d}", v.X, v.Y)
 }

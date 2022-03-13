@@ -6,7 +6,7 @@ import (
 	"github.com/dragon162/go-get-games/games/common/vector"
 )
 
-type gridI interface {
+type GridI interface {
 	Width() int
 	Height() int
 }
@@ -15,43 +15,49 @@ type SubscribableBoard interface {
 	SubscribeToChanges(handler func(vec2 vector.IntVec2)) *events.Subscription[vector.IntVec2]
 }
 
-type baseGrid struct {
-	gridI
+type subscribeGrid struct {
 	SubscribableBoard
-	width, height int
-	changeEvent   *events.Feed[vector.IntVec2]
+	changeEvent *events.Feed[vector.IntVec2]
 }
 
-func (b *baseGrid) getChangeEvent() *events.Feed[vector.IntVec2] {
+func (b *subscribeGrid) getChangeEvent() *events.Feed[vector.IntVec2] {
 	if b.changeEvent == nil {
 		b.changeEvent = events.Make[vector.IntVec2]()
 	}
 	return b.changeEvent
 }
-func (b *baseGrid) SubscribeToChanges(handler func(vec2 vector.IntVec2)) *events.Subscription[vector.IntVec2] {
+
+func (b *subscribeGrid) SubscribeToChanges(handler func(vec2 vector.IntVec2)) *events.Subscription[vector.IntVec2] {
 	return b.getChangeEvent().Subscribe(handler)
 }
-func (b *baseGrid) Width() int  { return b.width }
-func (b *baseGrid) Height() int { return b.height }
-func (b *baseGrid) ValidPos(pos vector.IntVec2) error {
-	if pos.X() < 0 {
-		return fmt.Errorf("X (%d) must not be less than 0", pos.X())
+
+type BaseGrid struct {
+	GridI
+	width, height int
+}
+
+func (b *BaseGrid) Width() int  { return b.width }
+func (b *BaseGrid) Height() int { return b.height }
+func (b *BaseGrid) ValidPos(pos vector.IntVec2) error {
+	if pos.X < 0 {
+		return fmt.Errorf("X (%d) must not be less than 0", pos.X)
 	}
-	if pos.Y() < 0 {
-		return fmt.Errorf("X (%d) must not be less than 0", pos.Y())
+	if pos.Y < 0 {
+		return fmt.Errorf("X (%d) must not be less than 0", pos.Y)
 	}
-	if pos.X() >= b.Width() {
-		return fmt.Errorf("X (%d) must less than width (%d)", pos.X(), b.Width())
+	if pos.X >= b.Width() {
+		return fmt.Errorf("X (%d) must less than width (%d)", pos.X, b.Width())
 	}
-	if pos.Y() >= b.Height() {
-		return fmt.Errorf("Y (%d) must less than height (%d)", pos.Y(), b.Height())
+	if pos.Y >= b.Height() {
+		return fmt.Errorf("Y (%d) must less than height (%d)", pos.Y, b.Height())
 	}
 	return nil
 }
 
 type SimpleGrid[T any] struct {
+	subscribeGrid
 	data map[vector.IntVec2]T
-	baseGrid
+	BaseGrid
 }
 
 func (s *SimpleGrid[T]) Get(pos vector.IntVec2) (T, bool) {
