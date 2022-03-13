@@ -27,6 +27,7 @@ var (
 
 var ch2resource = map[game.CellState]*theme.ThemedResource{
 	game.CellBomb:  bombResource,
+	game.CellFlag:  signalResource,
 	game.CellEmpty: emptyResource,
 	game.CellN0:    n0Resource,
 	game.CellN1:    n1Resource,
@@ -51,7 +52,11 @@ func MakeAndSyncRenderableBoard(g *game.Game) *buttongrid.RenderableBoard {
 	})
 
 	bg.ClickEvent.Subscribe(func(data buttongrid.ClickEventData) {
-		g.Reveal(data.Pos)
+		if data.Tapped {
+			g.Reveal(data.Pos)
+		} else {
+			g.ToggleFlag(data.Pos)
+		}
 	})
 
 	return bg

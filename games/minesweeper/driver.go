@@ -3,54 +3,16 @@ package minesweeper
 import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/theme"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
-	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
 )
 
-var (
-	emptyResource  = theme.NewThemedResource(assets.EmptyIcon)
-	bombResource   = theme.NewThemedResource(assets.BombIcon)
-	signalResource = theme.NewThemedResource(assets.SignalIcon)
-	tankResource   = theme.NewThemedResource(assets.TankIcon)
-	targetResource = theme.NewThemedResource(assets.TargetIcon)
-	n0Resource     = theme.NewThemedResource(assets.N0Icon)
-	n1Resource     = theme.NewThemedResource(assets.N1Icon)
-	n2Resource     = theme.NewThemedResource(assets.N2Icon)
-	n3Resource     = theme.NewThemedResource(assets.N3Icon)
-	n4Resource     = theme.NewThemedResource(assets.N4Icon)
-	n5Resource     = theme.NewThemedResource(assets.N5Icon)
-	n6Resource     = theme.NewThemedResource(assets.N6Icon)
-	n7Resource     = theme.NewThemedResource(assets.N7Icon)
-	n8Resource     = theme.NewThemedResource(assets.N8Icon)
-	n9Resource     = theme.NewThemedResource(assets.N9Icon)
-)
-
-var ch2resource = map[rune]*theme.ThemedResource{
-	'b': bombResource,
-	'f': targetResource,
-	't': tankResource,
-	's': signalResource,
-	' ': emptyResource,
-	'0': n0Resource,
-	'1': n1Resource,
-	'2': n2Resource,
-	'3': n3Resource,
-	'4': n4Resource,
-	'5': n5Resource,
-	'6': n6Resource,
-	'7': n7Resource,
-	'8': n8Resource,
-	'9': n9Resource,
-}
-
-// Show starts a new bugs game
+// Drive starts a new bugs game
 func Drive() {
 
 	a := app.New()
-	w := a.NewWindow("Hello")
+	w := a.NewWindow("Mines!")
 
 	/*
 		g := game.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
@@ -58,13 +20,19 @@ func Drive() {
 			"22 \n" +
 			"*1 "))
 		//*/
-	g := game.MakeFromGenerator(gamegen.ExpertGame)
+	//g := game.MakeFromGenerator(gamegen.ExpertGame)
+	g := game.MakeFromGenerator(gamegen.IntermediateGame)
 
-	ms := ui.MakeAndSyncRenderableBoard(g)
-	// https://github.com/fyne-io/examples/ for more examples to poke with
 	w.SetContent(container.NewVBox(
-		ms.CanvasObj(),
+		ui.MakeAndSyncRenderableBoard(g).CanvasObj(),
 	))
+
+	/*
+		go func() {
+			ai := &mineai.RandomAI{}
+			ai.Play(g, 1000)
+		}()
+		//*/
 
 	w.ShowAndRun()
 }

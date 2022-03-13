@@ -3,7 +3,6 @@ package gamegen
 import (
 	"github.com/dragon162/go-get-games/games/common/sliceutls"
 	"github.com/dragon162/go-get-games/games/common/vector"
-	"math/rand"
 	"strings"
 )
 
@@ -116,6 +115,6 @@ func generateNumBombs(width, height int, bombs int, discouragedPositions ...vect
 		}
 	}
 	// shuffle positions
-	rand.Shuffle(len(possiblePos), func(i, j int) { possiblePos[i], possiblePos[j] = possiblePos[j], possiblePos[i] })
+	sliceutls.Shuffle(possiblePos)
 	return sliceutls.VecList2Map(sliceutls.Truncate(possiblePos, bombs)...)
 }

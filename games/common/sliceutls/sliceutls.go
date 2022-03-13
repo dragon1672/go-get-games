@@ -3,6 +3,7 @@ package sliceutls
 import (
 	"github.com/dragon162/go-get-games/games/common/mmath"
 	"github.com/dragon162/go-get-games/games/common/vector"
+	"math/rand"
 )
 
 func VecList2Map(vals ...vector.IntVec2) map[vector.IntVec2]bool {
@@ -27,4 +28,8 @@ func PopLast[T any](s []T) ([]T, T, bool) {
 	ret := s[len(s)-1]
 	s = s[:len(s)-1]
 	return s, ret, true
+}
+
+func Shuffle[T any](s []T) {
+	rand.Shuffle(len(s), func(i, j int) { s[i], s[j] = s[j], s[i] })
 }
