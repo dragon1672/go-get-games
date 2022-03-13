@@ -8,7 +8,7 @@ import "fyne.io/fyne/v2"
 var EmptyIcon = &fyne.StaticResource{
 	StaticName: "empty.svg",
 	StaticContent: []byte(
-		"<svg width=\"32px\" height=\"32px\" viewBox=\"0 0 32 32\" id=\"icon\" xmlns=\"http://www.w3.org/2000/svg\">\n    <defs><style>.cls-1{fill:none;}</style></defs>\n    <title>empty-dot</title>\n    <rect x=\"15\" y=\"15\" width=\"2\" height=\"2\"/>\n</svg>"),
+		"<svg width=\"32px\" height=\"32px\" viewBox=\"0 0 32 32\" id=\"icon\" xmlns=\"http://www.w3.org/2000/svg\">\n    <defs><style>.cls-1{fill:none;}</style></defs>\n    <title>empty-dot</title>\n    <rect x=\"2\" y=\"2\" width=\"26\" height=\"26\"/>\n</svg>"),
 }
 var BombIcon = &fyne.StaticResource{
 	StaticName: "bomb.svg",

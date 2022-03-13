@@ -28,8 +28,8 @@ var (
 
 // Expert has 99 mines and is always 16 × 30 (or 30 × 16) : 20.625% bomb
 var (
-	ExpertGame     = &GameGenerator{Width: 16, Height: 30, Gen: &BombCountGen{BombCount: 99}}
-	HardDifficulty = &DifficultyBombGen{BombPercent: .2}
+	ExpertGame       = &GameGenerator{Width: 16, Height: 30, Gen: &BombCountGen{BombCount: 99}}
+	ExpertDifficulty = &DifficultyBombGen{BombPercent: .2}
 )
 
 type GameStateGenerator interface {

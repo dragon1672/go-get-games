@@ -4,8 +4,6 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
-	"github.com/dragon162/go-get-games/games/common/grids"
-	"github.com/dragon162/go-get-games/games/common/grids/gridbuilders"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
@@ -48,33 +46,19 @@ var ch2resource = map[rune]*theme.ThemedResource{
 	'9': n9Resource,
 }
 
-func MakeMineSweeperBoard() (*grids.GuiGrid[rune], error) {
-	return gridbuilders.MakeGuiGridFromString(""+
-		"bbbbbbb\n"+
-		"f 123 f\n"+
-		"b 456 b\n"+
-		"t 789 t\n"+
-		"bts0stb\n"+
-		"",
-		emptyResource,
-		func(r rune) *theme.ThemedResource {
-			if val, ok := ch2resource[r]; ok {
-				return val
-			}
-			return emptyResource
-		})
-}
-
 // Show starts a new bugs game
 func Drive() {
 
 	a := app.New()
 	w := a.NewWindow("Hello")
 
-	g := game.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
-		"*1 \n" +
-		"22 \n" +
-		"*1 "))
+	/*
+		g := game.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			"*1 \n" +
+			"22 \n" +
+			"*1 "))
+		//*/
+	g := game.MakeFromGenerator(gamegen.ExpertGame)
 
 	ms := ui.MakeAndSyncRenderableBoard(g)
 	// https://github.com/fyne-io/examples/ for more examples to poke with
