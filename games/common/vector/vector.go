@@ -29,3 +29,12 @@ func (v *IntVec2) LengthSquared() int {
 func (v *IntVec2) String() string {
 	return fmt.Sprintf("{%d,%d}", v.X, v.Y)
 }
+
+func IterateSurroundingInclusive(pos IntVec2, callback func(vec2 IntVec2)) {
+	for x := -1; x <= 1; x++ {
+		for y := -1; y <= 1; y++ {
+			offset := Of(x, y)
+			callback(pos.Add(offset))
+		}
+	}
+}

@@ -6,14 +6,17 @@ import (
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/golang/glog"
+	"sync"
 )
 
 type Game struct {
 	width, height int
 	bombs         map[vector.IntVec2]bool
 	flags         map[vector.IntVec2]bool
+	flagMu        sync.RWMutex
 	gen           gamegen.GameStateGenerator
 	revealed      map[vector.IntVec2]CellState
+	revealedMu    sync.RWMutex
 	ChangeEvent   events.Feed[ChangeEventData] // notably isn't a pointer so each event gets an independent copy
 }
 
@@ -26,9 +29,13 @@ func (g *Game) ValidPos(pos vector.IntVec2) bool {
 func (g *Game) NumBombs() int { return len(g.bombs) }
 
 func (g *Game) Get(pos vector.IntVec2) CellState {
+	g.revealedMu.RLock()
+	defer g.revealedMu.RUnlock()
 	if val, ok := g.revealed[pos]; ok {
 		return val
 	}
+	g.flagMu.RLock()
+	defer g.flagMu.RUnlock()
 	if flagged := g.flags[pos]; flagged {
 		return CellFlag
 	}
@@ -46,6 +53,21 @@ func (g *Game) Reveal(pos vector.IntVec2) []ChangeEventData {
 	return ret
 }
 
+// SetFlagged will mark position as flagged.
+func (g *Game) SetFlagged(pos vector.IntVec2) {
+	if current := g.Get(pos); current != CellEmpty && current != CellFlag {
+		glog.Warningf("Cannot flag already revealed location at %v. Already a %v.", pos, current)
+		return
+	}
+	if flagged := g.flags[pos]; flagged {
+		return //  already flagged
+	}
+	g.flagMu.Lock()
+	g.flags[pos] = true
+	g.flagMu.Unlock()
+	g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
+}
+
 // ToggleFlag will toggle the square as flagged, returns true if newly flagged.
 func (g *Game) ToggleFlag(pos vector.IntVec2) bool {
 	if current := g.Get(pos); current != CellEmpty && current != CellFlag {
@@ -53,9 +75,13 @@ func (g *Game) ToggleFlag(pos vector.IntVec2) bool {
 		return false
 	}
 	if flagged := g.flags[pos]; flagged {
+		g.flagMu.Lock()
 		delete(g.flags, pos)
+		g.flagMu.Unlock()
 	} else {
+		g.flagMu.Lock()
 		g.flags[pos] = true
+		g.flagMu.Unlock()
 	}
 	g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
 	return g.flags[pos]
@@ -63,21 +89,27 @@ func (g *Game) ToggleFlag(pos vector.IntVec2) bool {
 
 func (g *Game) GetAllRevealed() map[vector.IntVec2]CellState {
 	// make a copy
-	var ret map[vector.IntVec2]CellState
+	ret := make(map[vector.IntVec2]CellState)
+	g.revealedMu.RLock()
 	for key, val := range g.revealed {
 		ret[key] = val
 	}
+	g.revealedMu.RUnlock()
 	return ret
 }
 
 // silentlySet will not emit an event
 func (g *Game) silentlySet(pos vector.IntVec2, s CellState) ChangeEventData {
+	g.revealedMu.Lock()
 	if g.revealed == nil {
 		g.revealed = make(map[vector.IntVec2]CellState)
 	}
 	g.revealed[pos] = s
+	g.revealedMu.Unlock()
 	if flagged := g.flags[pos]; flagged {
+		g.flagMu.Lock()
 		delete(g.flags, pos)
+		g.flagMu.Unlock()
 	}
 	return ChangeEventData{pos, s}
 }
@@ -102,21 +134,18 @@ func (g *Game) silentReveal(toCheck ...vector.IntVec2) []ChangeEventData {
 		state := g.calculateAsState(pos)
 		ret = append(ret, g.silentlySet(pos, state))
 		if state == CellN0 {
-			for x := -1; x <= 1; x++ {
-				for y := -1; y <= 1; y++ {
+			vector.IterateSurroundingInclusive(pos, func(newPos vector.IntVec2) {
+				if g.ValidPos(newPos) {
 					// add everything including self and let loop handle
-					newPos := pos.Add(vector.Of(x, y))
-					if g.ValidPos(newPos) {
-						toCheck = append(toCheck, newPos)
-					}
+					toCheck = append(toCheck, newPos)
 				}
-			}
+			})
 		}
 	}
 	return ret
 }
 
-// ensureGen makes sure there are bombs. Otherwise noop.
+// ensureGen makes sure there are bombs. Otherwise, noop.
 func (g *Game) ensureGen(discouragedPositions ...vector.IntVec2) {
 	if g.bombs == nil {
 		g.bombs = g.gen.GenerateBombs(g.width, g.height, discouragedPositions...)
@@ -135,19 +164,15 @@ func (g *Game) calculateAsState(pos vector.IntVec2) CellState {
 func (g *Game) calcNum(pos vector.IntVec2) int {
 	g.ensureGen(pos)
 	bombCount := 0
-	for x := -1; x <= 1; x++ {
-		for y := -1; y <= 1; y++ {
-			// skip current pos
-			if x == 0 && y == 0 {
-				continue
-			}
-			offset := vector.Of(x, y)
-			toCheck := pos.Add(offset)
-			if b := g.bombs[toCheck]; b {
-				bombCount++
-			}
+	vector.IterateSurroundingInclusive(pos, func(toCheck vector.IntVec2) {
+		// skip current pos
+		if toCheck.X == 0 && toCheck.Y == 0 {
+			return
 		}
-	}
+		if b := g.bombs[toCheck]; b {
+			bombCount++
+		}
+	})
 	return bombCount
 }
 

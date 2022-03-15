@@ -33,3 +33,11 @@ func PopLast[T any](s []T) ([]T, T, bool) {
 func Shuffle[T any](s []T) {
 	rand.Shuffle(len(s), func(i, j int) { s[i], s[j] = s[j], s[i] })
 }
+
+func RandValue[T any](s []T) (T, bool) {
+	if len(s) == 0 {
+		var ret T
+		return ret, false
+	}
+	return s[rand.Int()%len(s)], true
+}

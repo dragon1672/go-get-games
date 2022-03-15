@@ -4,12 +4,11 @@ import (
 	"github.com/dragon162/go-get-games/games/common/sliceutls"
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
-	"time"
 )
 
 type RandomAI struct{}
 
-func (r *RandomAI) getMoves(g *game.Game) []vector.IntVec2 {
+func (r *RandomAI) GetMove(g *game.Game) (vector.IntVec2, bool) {
 	var possibleMoves []vector.IntVec2
 	for x := 0; x < g.Width(); x++ {
 		for y := 0; y < g.Height(); y++ {
@@ -19,18 +18,5 @@ func (r *RandomAI) getMoves(g *game.Game) []vector.IntVec2 {
 			}
 		}
 	}
-	sliceutls.Shuffle(possibleMoves)
-	return possibleMoves
-}
-
-func (r *RandomAI) Play(g *game.Game, delay int) {
-
-	possibleMoves := r.getMoves(g)
-	for len(possibleMoves) > 0 {
-		_, pos, _ := sliceutls.PopLast(possibleMoves)
-		g.Reveal(pos)
-		time.Sleep(time.Millisecond * time.Duration(delay))
-		possibleMoves = r.getMoves(g)
-	}
-
+	return sliceutls.RandValue(possibleMoves)
 }
