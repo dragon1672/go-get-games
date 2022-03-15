@@ -7,7 +7,6 @@ import (
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/safeai"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
-	"time"
 )
 
 // Drive starts a new bugs game
@@ -23,7 +22,8 @@ func Drive() {
 			"*1 "))
 		//*/
 	//g := game.MakeFromGenerator(gamegen.ExpertGame)
-	g := game.MakeFromGenerator(gamegen.IntermediateGame)
+	//g := game.MakeFromGenerator(gamegen.IntermediateGame)
+	g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(
 		ui.MakeAndSyncRenderableBoard(g).CanvasObj(),
@@ -31,11 +31,10 @@ func Drive() {
 
 	// Play with AutoFlagger
 	go func() {
-		ai := &safeai.SafeAI{}
-		for {
+		g.ChangeEvent.Subscribe(func(data game.ChangeEventData) {
+			ai := &safeai.SafeAI{}
 			ai.ScoreAndFlagDaBoard(g)
-			time.Sleep(time.Millisecond * 1500)
-		}
+		})
 	}()
 
 	/*
