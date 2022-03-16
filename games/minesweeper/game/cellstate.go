@@ -60,6 +60,43 @@ func (e CellState) String() string {
 	}
 }
 
+func (e CellState) Char() rune {
+	switch e {
+	case CellEmpty:
+		return '.'
+	case CellFlag:
+		return 'F'
+	case CellSafe:
+		return 'S'
+	case CellMaybeBomb:
+		return 'M'
+	case CellBomb:
+		return 'B'
+	case CellN0:
+		return '0'
+	case CellN1:
+		return '1'
+	case CellN2:
+		return '2'
+	case CellN3:
+		return '3'
+	case CellN4:
+		return '4'
+	case CellN5:
+		return '5'
+	case CellN6:
+		return '6'
+	case CellN7:
+		return '7'
+	case CellN8:
+		return '8'
+	case CellN9:
+		return '9'
+	default:
+		return '?'
+	}
+}
+
 func (e CellState) BombCount() int {
 	switch e {
 	case CellN0:

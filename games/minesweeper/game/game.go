@@ -6,6 +6,7 @@ import (
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/golang/glog"
+	"strings"
 	"sync"
 )
 
@@ -49,6 +50,18 @@ func (g *Game) ValidPos(pos vector.IntVec2) bool {
 		0 <= pos.Y && pos.Y < g.Height()
 }
 func (g *Game) NumBombs() int { return len(g.bombs) }
+func (g *Game) String() string {
+	sb := strings.Builder{}
+	sb.Grow(g.Height() * (g.Width() + 1))
+	for y := 0; y < g.Height(); y++ {
+		for x := 0; x < g.Width(); x++ {
+			sb.WriteRune(g.Get(vector.Of(x, y)).Char())
+		}
+		sb.WriteRune('\n')
+	}
+
+	return sb.String()
+}
 
 func (g *Game) Get(pos vector.IntVec2) CellState {
 	g.revealedMu.RLock()

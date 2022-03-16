@@ -5,9 +5,12 @@ import (
 	"fyne.io/fyne/v2/container"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
+	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
+	"github.com/dragon162/go-get-games/games/minesweeper/mineai/probabilityai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/safeai"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
 	"sync"
+	"time"
 )
 
 // Drive starts a new bugs game
@@ -22,8 +25,8 @@ func Drive() {
 			"22 \n" +
 			"*1 "))
 		//*/
-	//g := game.MakeFromGenerator(gamegen.ExpertGame)
-	g := game.MakeFromGenerator(gamegen.InsaneGame)
+	g := game.MakeFromGenerator(gamegen.ExpertGame)
+	//g := game.MakeFromGenerator(gamegen.InsaneGame)
 	//g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(
@@ -46,13 +49,15 @@ func Drive() {
 	}()
 	//*/
 
-	/*
-		go func() {
-			//ai := &mineai.RandomAI{}
-			ai := &safeai.SafeAI{}
-			mineai.AutoPlay(ai, g, time.Millisecond*1500)
-		}()
-		//*/
+	//*
+	go func() {
+		//ai := &mineai.RandomAI{}
+		//ai := &safeai.SafeAI{}
+		ai := &probabilityai.ProbabilityAI{}
+		time.Sleep(time.Second * 10)
+		mineai.AutoPlay(ai, g, time.Millisecond*500)
+	}()
+	//*/
 
 	w.ShowAndRun()
 }
