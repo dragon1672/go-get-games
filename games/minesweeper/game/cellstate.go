@@ -60,7 +60,7 @@ func (e CellState) String() string {
 	}
 }
 
-func (e CellState) Char() rune {
+func (e CellState) Rune() rune {
 	switch e {
 	case CellEmpty:
 		return '.'
@@ -73,7 +73,7 @@ func (e CellState) Char() rune {
 	case CellBomb:
 		return 'B'
 	case CellN0:
-		return '0'
+		return ' '
 	case CellN1:
 		return '1'
 	case CellN2:
@@ -154,6 +154,43 @@ func CellStateFromBombCount(n int) CellState {
 		return CellN9
 	default:
 		glog.Warningf("Unsupported bomb count %d", n)
+		return CellUnset
+	}
+}
+
+func CellStateFromRune(r rune) CellState {
+	switch r {
+	case '.':
+		return CellEmpty
+	case 'F':
+		return CellFlag
+	case 'S':
+		return CellSafe
+	case 'M':
+		return CellMaybeBomb
+	case 'B':
+		return CellBomb
+	case ' ':
+		return CellN0
+	case '1':
+		return CellN1
+	case '2':
+		return CellN2
+	case '3':
+		return CellN3
+	case '4':
+		return CellN4
+	case '5':
+		return CellN5
+	case '6':
+		return CellN6
+	case '7':
+		return CellN7
+	case '8':
+		return CellN8
+	case '9':
+		return CellN9
+	default:
 		return CellUnset
 	}
 }

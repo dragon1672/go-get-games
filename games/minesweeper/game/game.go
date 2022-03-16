@@ -6,7 +6,6 @@ import (
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/golang/glog"
-	"strings"
 	"sync"
 )
 
@@ -51,16 +50,7 @@ func (g *Game) ValidPos(pos vector.IntVec2) bool {
 }
 func (g *Game) NumBombs() int { return len(g.bombs) }
 func (g *Game) String() string {
-	sb := strings.Builder{}
-	sb.Grow(g.Height() * (g.Width() + 1))
-	for y := 0; y < g.Height(); y++ {
-		for x := 0; x < g.Width(); x++ {
-			sb.WriteRune(g.Get(vector.Of(x, y)).Char())
-		}
-		sb.WriteRune('\n')
-	}
-
-	return sb.String()
+	return toString(g)
 }
 func (g *Game) SnapshotReadonly() ReadOnlyGame {
 	return &readonlyCopy{
