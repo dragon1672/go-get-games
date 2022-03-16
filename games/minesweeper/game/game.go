@@ -210,7 +210,7 @@ func (g *Game) calcNum(pos vector.IntVec2) int {
 	bombCount := 0
 	vector.IterateSurroundingInclusive(pos, func(toCheck vector.IntVec2) {
 		// skip current pos
-		if toCheck.X == 0 && toCheck.Y == 0 {
+		if toCheck.X == pos.X && toCheck.Y == pos.Y {
 			return
 		}
 		if b := g.bombs[toCheck]; b {

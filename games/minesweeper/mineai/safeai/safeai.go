@@ -44,6 +44,7 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 		}
 
 		// if all possible moves == bomb count, they must all be bombs
+		// Note this "breaks" if a bomb has already been revealed
 		if len(touchingMoves) == bombCount {
 			for touching := range touchingMoves {
 				if ret[touching] != EvalBomb { // check to only re-enqueue if actually changing
@@ -115,5 +116,5 @@ func (s *SafeAI) GetMove(g *game.Game) (vector.IntVec2, bool) {
 		return pos, true
 	}
 	glog.Warningf("No fully safe moves found, going full random")
-	return (&mineai.RandomAI{}).GetMove(g) // assumes there is at least 1 value
+	return (&mineai.RandomAI{}).GetMove(g)
 }
