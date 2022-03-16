@@ -36,3 +36,11 @@ func FromSlice(s []vector.IntVec2) *SetVecQueue {
 	}
 	return ret
 }
+
+func FromMap[T any](m map[vector.IntVec2]T) *SetVecQueue {
+	ret := &SetVecQueue{}
+	for k := range m {
+		ret.Add(k)
+	}
+	return ret
+}

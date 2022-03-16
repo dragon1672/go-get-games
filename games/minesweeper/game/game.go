@@ -84,11 +84,15 @@ func (g *Game) setFlag(pos vector.IntVec2, a annotation) {
 		return //  already flagged with same value
 	}
 	g.annotationsMu.Lock()
+	changed := false
 	if f, ok := g.annotations[pos]; !ok || f != a {
+		changed = true
 		g.annotations[pos] = a
-		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: a.State()})
 	}
 	g.annotationsMu.Unlock()
+	if changed {
+		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
+	}
 }
 
 func (g *Game) removeAnnotations(pos vector.IntVec2) {
@@ -96,11 +100,15 @@ func (g *Game) removeAnnotations(pos vector.IntVec2) {
 		return
 	}
 	g.annotationsMu.Lock()
+	changed := false
 	if _, ok := g.annotations[pos]; ok {
+		changed = true
 		delete(g.annotations, pos)
-		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
 	}
 	g.annotationsMu.Unlock()
+	if changed {
+		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
+	}
 }
 
 // SetFlagged will mark position as flagged.

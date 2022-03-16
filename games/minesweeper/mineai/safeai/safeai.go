@@ -24,10 +24,8 @@ const (
 
 // ScoreAndFlagDaBoard maps the unknown spaces to an eval
 func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
-
-	// I could make this return the first safe value, but I think it is cooler to have a fully scored board
 	ret := make(map[vector.IntVec2]BombEval)
-	q := queue.FromSlice(map2Slice(g.GetAllRevealed()))
+	q := queue.FromMap(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
 		if bombCount <= 0 {
@@ -37,6 +35,13 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 		mutatedVals := make(map[vector.IntVec2]bool) // surrounding values will be re-checked
 
 		touchingMoves := getTouchingMoves(g, pos)
+
+		// init to unknowns
+		for pos := range touchingMoves {
+			if _, ok := ret[pos]; !ok {
+				ret[pos] = EvalUnknown
+			}
+		}
 
 		// if all possible moves == bomb count, they must all be bombs
 		if len(touchingMoves) == bombCount {
@@ -87,10 +92,8 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 
 func getTouchingMoves(g *game.Game, pos vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
-	allRevealed := g.GetAllRevealed()
 	vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
-		_, revealed := allRevealed[pos]
-		if !revealed {
+		if g.ValidPos(pos) && !g.Get(pos).Revealed() {
 			ret[pos] = true
 		}
 	})
@@ -105,16 +108,6 @@ func selectMove(moves map[vector.IntVec2]BombEval) (vector.IntVec2, bool) {
 	}
 	var ret vector.IntVec2
 	return ret, false
-}
-
-func map2Slice[T any](m map[vector.IntVec2]T) []vector.IntVec2 {
-	ret := make([]vector.IntVec2, len(m))
-	i := 0
-	for k := range m {
-		ret[i] = k
-		i++
-	}
-	return ret
 }
 
 func (s *SafeAI) GetMove(g *game.Game) (vector.IntVec2, bool) {
