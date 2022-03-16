@@ -72,6 +72,36 @@ func (g *Game) SnapshotReadonly() ReadOnlyGame {
 	}
 }
 
+func (g *Game) HasLost() bool {
+	g.revealedMu.RLock()
+	defer g.revealedMu.RUnlock()
+	for _, v := range g.revealed {
+		if v == CellBomb {
+			return true
+		}
+	}
+	return false
+}
+
+func (g *Game) HasWon() bool {
+	g.revealedMu.RLock()
+	defer g.revealedMu.RUnlock()
+	for x := 0; x < g.Width(); x++ {
+		for y := 0; y < g.Height(); y++ {
+			pos := vector.Of(x, y)
+			if _, revealed := g.revealed[pos]; !revealed && !g.bombs[pos] {
+				// still have positions that aren't bombs to reveal
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (g *Game) GameOver() bool {
+	return g.HasLost() || g.HasWon()
+}
+
 func (g *Game) Get(pos vector.IntVec2) CellState {
 	g.revealedMu.RLock()
 	defer g.revealedMu.RUnlock()

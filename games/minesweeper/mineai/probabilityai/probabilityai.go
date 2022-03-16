@@ -69,7 +69,6 @@ func (p *ProbabilityAI) ScoreAndFlagDaBoard(g game.ReadOnlyGame) map[vector.IntV
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
 	}
 	possibilities := p.resolveUnknowns(g, m)
-
 	bombCount := make(map[vector.IntVec2]int)
 	ret := make(map[vector.IntVec2]float64)
 	for pi, possibility := range possibilities {
@@ -119,15 +118,23 @@ func (p *ProbabilityAI) evalBoard(g game.ReadOnlyGame, ret map[vector.IntVec2]Bo
 
 		// if all possible moves == bomb count, they must all be bombs
 		var touchingBombsOrUnknowns []vector.IntVec2
+		touchingBombs := make(map[vector.IntVec2]bool)
 		for pos := range touchingMoves {
 			if v, ok := ret[pos]; ok {
 				if v == EvalBomb || v == EvalUnknown {
 					touchingBombsOrUnknowns = append(touchingBombsOrUnknowns, pos)
 				}
+				if v == EvalBomb {
+					touchingBombs[pos] = true
+				}
 			}
 		}
 		if len(touchingBombsOrUnknowns) < bombCount {
-			// Invalid game state! ahhhhhh
+			// Invalid game state not enough possible bombs!
+			return nil, false
+		}
+		if len(touchingBombs) > bombCount {
+			// Invalid state too many bombs!
 			return nil, false
 		}
 
@@ -153,16 +160,11 @@ func (p *ProbabilityAI) evalBoard(g game.ReadOnlyGame, ret map[vector.IntVec2]Bo
 		}
 
 		// If we have flagged # of bombs as number, then the remaining must be safe
-		touchingBombs := make(map[vector.IntVec2]bool)
-		for touching := range touchingMoves {
-			if ret[touching] == EvalBomb {
-				touchingBombs[touching] = true
-			}
-		}
+
 		if len(touchingBombs) == bombCount {
 			// Mark all the non bombs as safe since this number is "satisfied"
 			for touching := range touchingMoves {
-				if ret[touching] != EvalBomb {
+				if ret[touching] != EvalBomb && !g.Get(touching).Revealed() {
 					if ret[touching] != EvalSafe { // check to only re-enqueue if actually changing
 						ret[touching] = EvalSafe
 						mutatedVals[touching] = true
@@ -171,7 +173,7 @@ func (p *ProbabilityAI) evalBoard(g game.ReadOnlyGame, ret map[vector.IntVec2]Bo
 			}
 		}
 
-		// Add back any surrounding values to be re-checked
+		// Mutated values are unrevealed positions that changed, add back any surrounding numbered positions to re-check
 		for pos := range mutatedVals {
 			vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
 				if g.ValidPos(pos) && g.Get(pos).Revealed() {
@@ -272,7 +274,7 @@ func (p *ProbabilityAI) GetMove(g game.ReadOnlyGame) (vector.IntVec2, bool) {
 	}
 	moves := p.ScoreAndFlagDaBoard(g)
 	if len(moves) > 0 {
-		pos, _ := selectMove(p.ScoreAndFlagDaBoard(g))
+		pos, _ := selectMove(moves)
 		return pos, true
 	}
 	glog.Warningf("No fully safe moves found, going full random")

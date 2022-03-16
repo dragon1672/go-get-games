@@ -25,8 +25,9 @@ func Drive() {
 			"22 \n" +
 			"*1 "))
 		//*/
-	g := game.MakeFromGenerator(gamegen.ExpertGame)
+	//g := game.MakeFromGenerator(gamegen.ExpertGame)
 	//g := game.MakeFromGenerator(gamegen.InsaneGame)
+	g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 10, Height: 10, Gen: gamegen.ExpertDifficulty})
 	//g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(
