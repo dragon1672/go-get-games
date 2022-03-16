@@ -31,6 +31,11 @@ var (
 	ExpertDifficulty = &DifficultyBombGen{BombPercent: .2}
 )
 
+var (
+	InsaneGame       = &GameGenerator{Width: 50, Height: 30, Gen: InsaneDifficulty}
+	InsaneDifficulty = &DifficultyBombGen{BombPercent: .3}
+)
+
 type GameStateGenerator interface {
 	GenerateBombs(width, height int, discouragedPositions ...vector.IntVec2) map[vector.IntVec2]bool
 }

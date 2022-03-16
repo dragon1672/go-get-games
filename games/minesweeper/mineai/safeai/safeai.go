@@ -8,7 +8,10 @@ import (
 	"github.com/golang/glog"
 )
 
-type SafeAI struct{}
+type SafeAI struct {
+	FlagBombs bool
+	FlagSafe  bool
+}
 
 type BombEval int64
 
@@ -38,8 +41,10 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 		// if all possible moves == bomb count, they must all be bombs
 		if len(touchingMoves) == bombCount {
 			for touching := range touchingMoves {
-				g.SetFlagged(touching)
 				if ret[touching] != EvalBomb { // check to only re-enqueue if actually changing
+					if s.FlagBombs {
+						g.SetFlagged(touching)
+					}
 					ret[touching] = EvalBomb
 					mutatedVals[touching] = true
 				}
@@ -58,6 +63,9 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 			for touching := range touchingMoves {
 				if ret[touching] != EvalBomb {
 					if ret[touching] != EvalSafe { // check to only re-enqueue if actually changing
+						if s.FlagSafe {
+							g.SetSafe(touching)
+						}
 						ret[touching] = EvalSafe
 						mutatedVals[touching] = true
 					}
@@ -79,8 +87,9 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 
 func getTouchingMoves(g *game.Game, pos vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
+	allRevealed := g.GetAllRevealed()
 	vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
-		_, revealed := g.GetAllRevealed()[pos]
+		_, revealed := allRevealed[pos]
 		if !revealed {
 			ret[pos] = true
 		}

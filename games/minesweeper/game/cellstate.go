@@ -8,6 +8,8 @@ const (
 	CellUnset CellState = iota
 	CellEmpty
 	CellFlag
+	CellSafe
+	CellMaybeBomb
 	CellBomb
 	CellN0
 	CellN1
@@ -27,6 +29,10 @@ func (e CellState) String() string {
 		return "Empty"
 	case CellFlag:
 		return "Flag"
+	case CellSafe:
+		return "CellSafe"
+	case CellMaybeBomb:
+		return "CellMaybeBomb"
 	case CellBomb:
 		return "Bomb"
 	case CellN0:
@@ -79,6 +85,9 @@ func (e CellState) BombCount() int {
 	default:
 		return -1
 	}
+}
+func (e CellState) Revealed() bool {
+	return e.BombCount() >= 0
 }
 
 func CellStateFromBombCount(n int) CellState {

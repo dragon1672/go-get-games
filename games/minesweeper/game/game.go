@@ -9,11 +9,33 @@ import (
 	"sync"
 )
 
+type annotation int64
+
+const (
+	annotationUnset annotation = iota
+	annotationFlag
+	annotationMaybe
+	annotationSafe
+)
+
+func (e annotation) State() CellState {
+	switch e {
+	case annotationFlag:
+		return CellFlag
+	case annotationMaybe:
+		return CellMaybeBomb
+	case annotationSafe:
+		return CellSafe
+	default:
+		return CellUnset
+	}
+}
+
 type Game struct {
 	width, height int
 	bombs         map[vector.IntVec2]bool
-	flags         map[vector.IntVec2]bool
-	flagMu        sync.RWMutex
+	annotations   map[vector.IntVec2]annotation
+	annotationsMu sync.RWMutex
 	gen           gamegen.GameStateGenerator
 	revealed      map[vector.IntVec2]CellState
 	revealedMu    sync.RWMutex
@@ -34,10 +56,10 @@ func (g *Game) Get(pos vector.IntVec2) CellState {
 	if val, ok := g.revealed[pos]; ok {
 		return val
 	}
-	g.flagMu.RLock()
-	defer g.flagMu.RUnlock()
-	if flagged := g.flags[pos]; flagged {
-		return CellFlag
+	g.annotationsMu.RLock()
+	defer g.annotationsMu.RUnlock()
+	if f, ok := g.annotations[pos]; ok {
+		return f.State()
 	}
 	return CellEmpty
 }
@@ -53,38 +75,56 @@ func (g *Game) Reveal(pos vector.IntVec2) []ChangeEventData {
 	return ret
 }
 
-// SetFlagged will mark position as flagged.
-func (g *Game) SetFlagged(pos vector.IntVec2) {
-	if current := g.Get(pos); current != CellEmpty && current != CellFlag {
+func (g *Game) setFlag(pos vector.IntVec2, a annotation) {
+	if current := g.Get(pos); current.Revealed() {
 		glog.Warningf("Cannot flag already revealed location at %v. Already a %v.", pos, current)
 		return
 	}
-	if flagged := g.flags[pos]; flagged {
-		return //  already flagged
+	if f, ok := g.annotations[pos]; ok && f == a {
+		return //  already flagged with same value
 	}
-	g.flagMu.Lock()
-	g.flags[pos] = true
-	g.flagMu.Unlock()
-	g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
+	g.annotationsMu.Lock()
+	if f, ok := g.annotations[pos]; !ok || f != a {
+		g.annotations[pos] = a
+		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: a.State()})
+	}
+	g.annotationsMu.Unlock()
+}
+
+func (g *Game) removeAnnotations(pos vector.IntVec2) {
+	if _, ok := g.annotations[pos]; !ok {
+		return
+	}
+	g.annotationsMu.Lock()
+	if _, ok := g.annotations[pos]; ok {
+		delete(g.annotations, pos)
+		g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
+	}
+	g.annotationsMu.Unlock()
+}
+
+// SetFlagged will mark position as flagged.
+func (g *Game) SetFlagged(pos vector.IntVec2) {
+	g.setFlag(pos, annotationFlag)
+}
+
+// SetSafe will mark position as safe.
+func (g *Game) SetSafe(pos vector.IntVec2) {
+	g.setFlag(pos, annotationSafe)
+}
+
+// SetMaybe will mark position as maybe.
+func (g *Game) SetMaybe(pos vector.IntVec2) {
+	g.setFlag(pos, annotationMaybe)
 }
 
 // ToggleFlag will toggle the square as flagged, returns true if newly flagged.
-func (g *Game) ToggleFlag(pos vector.IntVec2) bool {
-	if current := g.Get(pos); current != CellEmpty && current != CellFlag {
-		glog.Warningf("Cannot flag already revealed location at %v. Already a %v.", pos, current)
-		return false
-	}
-	if flagged := g.flags[pos]; flagged {
-		g.flagMu.Lock()
-		delete(g.flags, pos)
-		g.flagMu.Unlock()
+func (g *Game) ToggleFlag(pos vector.IntVec2) {
+	if _, flagged := g.annotations[pos]; !flagged {
+		g.SetFlagged(pos)
 	} else {
-		g.flagMu.Lock()
-		g.flags[pos] = true
-		g.flagMu.Unlock()
+		g.removeAnnotations(pos)
 	}
-	g.ChangeEvent.Send(ChangeEventData{Pos: pos, Val: g.Get(pos)})
-	return g.flags[pos]
 }
 
 func (g *Game) GetAllRevealed() map[vector.IntVec2]CellState {
@@ -106,11 +146,7 @@ func (g *Game) silentlySet(pos vector.IntVec2, s CellState) ChangeEventData {
 	}
 	g.revealed[pos] = s
 	g.revealedMu.Unlock()
-	if flagged := g.flags[pos]; flagged {
-		g.flagMu.Lock()
-		delete(g.flags, pos)
-		g.flagMu.Unlock()
-	}
+	g.removeAnnotations(pos)
 	return ChangeEventData{pos, s}
 }
 
@@ -178,9 +214,9 @@ func (g *Game) calcNum(pos vector.IntVec2) int {
 
 func MakeFromGenerator(gen *gamegen.GameGenerator) *Game {
 	return &Game{
-		width:  gen.Width,
-		height: gen.Height,
-		gen:    gen.Gen,
-		flags:  make(map[vector.IntVec2]bool),
+		width:       gen.Width,
+		height:      gen.Height,
+		gen:         gen.Gen,
+		annotations: make(map[vector.IntVec2]annotation),
 	}
 }

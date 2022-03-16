@@ -26,19 +26,21 @@ var (
 )
 
 var ch2resource = map[game.CellState]*theme.ThemedResource{
-	game.CellBomb:  bombResource,
-	game.CellFlag:  signalResource,
-	game.CellEmpty: emptyResource,
-	game.CellN0:    n0Resource,
-	game.CellN1:    n1Resource,
-	game.CellN2:    n2Resource,
-	game.CellN3:    n3Resource,
-	game.CellN4:    n4Resource,
-	game.CellN5:    n5Resource,
-	game.CellN6:    n6Resource,
-	game.CellN7:    n7Resource,
-	game.CellN8:    n8Resource,
-	game.CellN9:    n9Resource,
+	game.CellBomb:      bombResource,
+	game.CellFlag:      signalResource,
+	game.CellEmpty:     emptyResource,
+	game.CellMaybeBomb: tankResource,
+	game.CellSafe:      targetResource,
+	game.CellN0:        n0Resource,
+	game.CellN1:        n1Resource,
+	game.CellN2:        n2Resource,
+	game.CellN3:        n3Resource,
+	game.CellN4:        n4Resource,
+	game.CellN5:        n5Resource,
+	game.CellN6:        n6Resource,
+	game.CellN7:        n7Resource,
+	game.CellN8:        n8Resource,
+	game.CellN9:        n9Resource,
 }
 
 func MakeAndSyncRenderableBoard(g *game.Game) *buttongrid.RenderableBoard {
