@@ -124,6 +124,9 @@ func (e CellState) BombCount() int {
 	}
 }
 func (e CellState) Revealed() bool {
+	if e == CellBomb {
+		return true
+	}
 	return e.BombCount() >= 0
 }
 
