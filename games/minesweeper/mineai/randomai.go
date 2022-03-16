@@ -8,7 +8,7 @@ import (
 
 type RandomAI struct{}
 
-func (r *RandomAI) GetMove(g *game.Game) (vector.IntVec2, bool) {
+func (r *RandomAI) GetMove(g game.ReadOnlyGame) (vector.IntVec2, bool) {
 	var possibleMoves []vector.IntVec2
 	for x := 0; x < g.Width(); x++ {
 		for y := 0; y < g.Height(); y++ {

@@ -7,13 +7,12 @@ import (
 )
 
 type AutoPlayableAI interface {
-	GetMove(g *game.Game) (vector.IntVec2, bool)
+	GetMove(g game.ReadOnlyGame) (vector.IntVec2, bool)
 }
 
 func AutoPlay(ai AutoPlayableAI, g *game.Game, delay time.Duration) {
-	for move, ok := ai.GetMove(g); ok; move, ok = ai.GetMove(g) {
+	for move, ok := ai.GetMove(g.SnapshotReadonly()); ok; move, ok = ai.GetMove(g.SnapshotReadonly()) {
 		g.Reveal(move)
 		time.Sleep(delay)
 	}
-
 }

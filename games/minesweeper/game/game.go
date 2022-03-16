@@ -62,6 +62,15 @@ func (g *Game) String() string {
 
 	return sb.String()
 }
+func (g *Game) SnapshotReadonly() ReadOnlyGame {
+	return &readonlyCopy{
+		width:       g.width,
+		height:      g.height,
+		bombCount:   len(g.bombs),
+		annotations: g.copyAnnotations(),
+		revealed:    g.GetAllRevealed(),
+	}
+}
 
 func (g *Game) Get(pos vector.IntVec2) CellState {
 	g.revealedMu.RLock()
@@ -146,6 +155,17 @@ func (g *Game) ToggleFlag(pos vector.IntVec2) {
 	} else {
 		g.removeAnnotations(pos)
 	}
+}
+
+func (g *Game) copyAnnotations() map[vector.IntVec2]annotation {
+	// make a copy
+	ret := make(map[vector.IntVec2]annotation)
+	g.annotationsMu.RLock()
+	for key, val := range g.annotations {
+		ret[key] = val
+	}
+	g.annotationsMu.RUnlock()
+	return ret
 }
 
 func (g *Game) GetAllRevealed() map[vector.IntVec2]CellState {

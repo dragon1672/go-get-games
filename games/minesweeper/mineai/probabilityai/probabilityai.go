@@ -63,7 +63,7 @@ Validator, confirm that each number has either enough unknowns or known bombs to
 // 1 == 100% a bomb
 // 0 == 0% a bomb
 // .5 == 50% a bomb
-func (p *ProbabilityAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]float64 {
+func (p *ProbabilityAI) ScoreAndFlagDaBoard(g game.ReadOnlyGame) map[vector.IntVec2]float64 {
 	m, ok := p.evalBoard(g, make(map[vector.IntVec2]BombEval))
 	if !ok {
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
@@ -94,7 +94,7 @@ func (p *ProbabilityAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]flo
 	return ret
 }
 
-func (p *ProbabilityAI) evalBoard(g *game.Game, ret map[vector.IntVec2]BombEval) (map[vector.IntVec2]BombEval, bool) {
+func (p *ProbabilityAI) evalBoard(g game.ReadOnlyGame, ret map[vector.IntVec2]BombEval) (map[vector.IntVec2]BombEval, bool) {
 	q := queue.FromMap(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
@@ -183,7 +183,7 @@ func (p *ProbabilityAI) evalBoard(g *game.Game, ret map[vector.IntVec2]BombEval)
 	return ret, true
 }
 
-func (p *ProbabilityAI) resolveUnknowns(g *game.Game, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
+func (p *ProbabilityAI) resolveUnknowns(g game.ReadOnlyGame, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
 	fullyResolved := true
 	for _, v := range m {
 		if v == EvalUnknown {
@@ -230,7 +230,7 @@ func dup(m map[vector.IntVec2]BombEval) map[vector.IntVec2]BombEval {
 	return r
 }
 
-func getSurrounding(g *game.Game, p vector.IntVec2) map[vector.IntVec2]bool {
+func getSurrounding(g game.ReadOnlyGame, p vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
 	vector.IterateSurroundingInclusive(p, func(pos vector.IntVec2) {
 		if g.ValidPos(pos) && pos != p {
@@ -252,7 +252,7 @@ func selectMove(moves map[vector.IntVec2]float64) (vector.IntVec2, float64) {
 	return safestMove, safestVal
 }
 
-func (p *ProbabilityAI) getSimpleMove(g *game.Game) (vector.IntVec2, bool) {
+func (p *ProbabilityAI) getSimpleMove(g game.ReadOnlyGame) (vector.IntVec2, bool) {
 	m, ok := p.evalBoard(g, make(map[vector.IntVec2]BombEval))
 	if !ok {
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
@@ -266,7 +266,7 @@ func (p *ProbabilityAI) getSimpleMove(g *game.Game) (vector.IntVec2, bool) {
 	return ret, false
 }
 
-func (p *ProbabilityAI) GetMove(g *game.Game) (vector.IntVec2, bool) {
+func (p *ProbabilityAI) GetMove(g game.ReadOnlyGame) (vector.IntVec2, bool) {
 	if pos, ok := p.getSimpleMove(g); ok {
 		return pos, true
 	}
