@@ -1,44 +1,42 @@
 package queue
 
-import "github.com/dragon162/go-get-games/games/common/vector"
-
-type SetVecQueue struct {
-	data map[vector.IntVec2]bool
+type SetQueue[T comparable] struct {
+	data map[T]bool
 }
 
-func (s *SetVecQueue) Add(val vector.IntVec2) {
+func (s *SetQueue[T]) Add(val T) {
 	if s.data == nil {
-		s.data = make(map[vector.IntVec2]bool)
+		s.data = make(map[T]bool)
 	}
 	s.data[val] = true
 }
-func (s *SetVecQueue) Pop() (vector.IntVec2, bool) {
+func (s *SetQueue[T]) Pop() (T, bool) {
 	if s.Size() == 0 {
-		var ret vector.IntVec2
+		var ret T
 		return ret, false
 	}
 	for k := range s.data {
 		delete(s.data, k)
 		return k, true
 	}
-	var ret vector.IntVec2
+	var ret T
 	return ret, false
 }
 
-func (s *SetVecQueue) Size() int {
+func (s *SetQueue[T]) Size() int {
 	return len(s.data)
 }
 
-func FromSlice(s []vector.IntVec2) *SetVecQueue {
-	ret := &SetVecQueue{}
+func FromSlice[T comparable](s ...T) *SetQueue[T] {
+	ret := &SetQueue[T]{}
 	for _, v := range s {
 		ret.Add(v)
 	}
 	return ret
 }
 
-func FromMap[T any](m map[vector.IntVec2]T) *SetVecQueue {
-	ret := &SetVecQueue{}
+func FromMapKeys[T comparable, V any](m map[T]V) *SetQueue[T] {
+	ret := &SetQueue[T]{}
 	for k := range m {
 		ret.Add(k)
 	}

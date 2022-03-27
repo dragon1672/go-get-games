@@ -1,10 +1,10 @@
 package game
 
 import (
+	"github.com/dragon162/go-get-games/games/minesweeper/game/gamegen"
 	"testing"
 
 	"github.com/dragon162/go-get-games/games/common/vector"
-	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/pellared/fluentassert/f"
 )
 

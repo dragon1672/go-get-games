@@ -43,7 +43,7 @@ func TestList2Map(t *testing.T) {
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			got := VecList2Map(tc.input...)
+			got := List2Map(tc.input...)
 			f.Assert(t, got).Eq(tc.want, "should return proper value")
 		})
 	}

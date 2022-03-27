@@ -4,7 +4,6 @@ import (
 	"github.com/dragon162/go-get-games/games/common/events"
 	"github.com/dragon162/go-get-games/games/common/sliceutls"
 	"github.com/dragon162/go-get-games/games/common/vector"
-	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/golang/glog"
 	"sync"
 )
@@ -31,12 +30,23 @@ func (e annotation) State() CellState {
 	}
 }
 
+type GameStateGenerator interface {
+	GenerateBombs(width, height int, discouragedPositions ...vector.IntVec2) map[vector.IntVec2]bool
+}
+
+type GameGenerator struct {
+	Width, Height int
+	BigOpening    bool
+	Gen           GameStateGenerator
+}
+
 type Game struct {
 	width, height int
 	bombs         map[vector.IntVec2]bool
 	annotations   map[vector.IntVec2]annotation
 	annotationsMu sync.RWMutex
-	gen           gamegen.GameStateGenerator
+	gen           GameStateGenerator
+	bigOpening    bool
 	revealed      map[vector.IntVec2]CellState
 	revealedMu    sync.RWMutex
 	ChangeEvent   events.Feed[ChangeEventData] // notably isn't a pointer so each event gets an independent copy
@@ -129,6 +139,9 @@ func (g *Game) setFlag(pos vector.IntVec2, a annotation) {
 	changed := false
 	if f, ok := g.annotations[pos]; !ok || f != a {
 		changed = true
+		if g.annotations == nil {
+			g.annotations = make(map[vector.IntVec2]annotation)
+		}
 		g.annotations[pos] = a
 	}
 	g.annotationsMu.Unlock()
@@ -243,8 +256,15 @@ func (g *Game) silentReveal(toCheck ...vector.IntVec2) []ChangeEventData {
 }
 
 // ensureGen makes sure there are bombs. Otherwise, noop.
-func (g *Game) ensureGen(discouragedPositions ...vector.IntVec2) {
+func (g *Game) ensureGen(pos vector.IntVec2) {
 	if g.bombs == nil {
+		discouragedPositions := []vector.IntVec2{pos}
+		if g.bigOpening {
+			discouragedPositions = []vector.IntVec2{}
+			vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
+				discouragedPositions = append(discouragedPositions, pos)
+			})
+		}
 		g.bombs = g.gen.GenerateBombs(g.width, g.height, discouragedPositions...)
 	}
 }
@@ -273,11 +293,11 @@ func (g *Game) calcNum(pos vector.IntVec2) int {
 	return bombCount
 }
 
-func MakeFromGenerator(gen *gamegen.GameGenerator) *Game {
+func MakeFromGenerator(gen *GameGenerator) *Game {
 	return &Game{
-		width:       gen.Width,
-		height:      gen.Height,
-		gen:         gen.Gen,
-		annotations: make(map[vector.IntVec2]annotation),
+		width:      gen.Width,
+		height:     gen.Height,
+		gen:        gen.Gen,
+		bigOpening: gen.BigOpening,
 	}
 }

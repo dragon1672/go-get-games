@@ -4,7 +4,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
-	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
+	"github.com/dragon162/go-get-games/games/minesweeper/game/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/probabilityai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/safeai"
@@ -27,7 +27,7 @@ func Drive() {
 		//*/
 	//g := game.MakeFromGenerator(gamegen.ExpertGame)
 	//g := game.MakeFromGenerator(gamegen.InsaneGame)
-	g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 10, Height: 10, Gen: gamegen.ExpertDifficulty})
+	g := game.MakeFromGenerator(&game.GameGenerator{Width: 10, Height: 10, BigOpening: true, Gen: gamegen.InsaneDifficulty})
 	//g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(

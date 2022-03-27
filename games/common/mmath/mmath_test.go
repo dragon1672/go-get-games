@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMinInt(t *testing.T) {
+func TestMin(t *testing.T) {
 	tcs := []struct {
 		name string
 		a, b int
@@ -44,13 +44,13 @@ func TestMinInt(t *testing.T) {
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			got := MinInt(tc.a, tc.b)
+			got := Min(tc.a, tc.b)
 			f.Assert(t, got).Eq(tc.want, "should return proper value")
 		})
 	}
 }
 
-func TestMaxInt(t *testing.T) {
+func TestMax(t *testing.T) {
 	tcs := []struct {
 		name string
 		a, b int
@@ -89,7 +89,7 @@ func TestMaxInt(t *testing.T) {
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
-			got := MinInt(tc.a, tc.b)
+			got := Max(tc.a, tc.b)
 			f.Assert(t, got).Eq(tc.want, "should return proper value")
 		})
 	}

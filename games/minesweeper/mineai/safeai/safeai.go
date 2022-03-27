@@ -25,7 +25,7 @@ const (
 // ScoreAndFlagDaBoard maps the unknown spaces to an eval
 func (s *SafeAI) ScoreAndFlagDaBoard(g *game.Game) map[vector.IntVec2]BombEval {
 	ret := make(map[vector.IntVec2]BombEval)
-	q := queue.FromMap(g.GetAllRevealed())
+	q := queue.FromMapKeys(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
 		if bombCount <= 0 {

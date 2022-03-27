@@ -3,12 +3,11 @@ package probabilityai
 import (
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/game"
-	"github.com/dragon162/go-get-games/games/minesweeper/gamegen"
 	"github.com/pellared/fluentassert/f"
 	"testing"
 )
 
-func MakeGameAndReveal(pos vector.IntVec2, gen *gamegen.GameGenerator) *game.Game {
+func MakeGameAndReveal(pos vector.IntVec2, gen *game.GameGenerator) *game.Game {
 	g := game.MakeFromGenerator(gen)
 	g.Reveal(pos)
 	return g
@@ -20,6 +19,18 @@ func TestEvaluation(t *testing.T) {
 		g    game.ReadOnlyGame
 		want map[vector.IntVec2]float64
 	}{
+		{
+			name: "solvable",
+			g: game.MakeReadonlyRevealedString("" +
+				".1 \n" +
+				".2 \n" +
+				".1 "),
+			want: map[vector.IntVec2]float64{
+				vector.Of(0, 0): 1,
+				vector.Of(0, 1): 0,
+				vector.Of(0, 2): 1,
+			},
+		},
 		{ // TODO snag more examples from https://minesweeper.online/help/patterns
 			name: "B1",
 			g: game.MakeReadonlyRevealedString("" +
@@ -37,32 +48,6 @@ func TestEvaluation(t *testing.T) {
 				vector.Of(2, 4): 0,
 				vector.Of(1, 4): 0,
 				vector.Of(0, 4): 1,
-			},
-		},
-		{
-			name: "11111",
-			g: game.MakeReadonlyRevealedString("" +
-				".....\n" +
-				"11111\n" +
-				"     "),
-			want: map[vector.IntVec2]float64{
-				vector.Of(0, 0): .5,
-				vector.Of(1, 0): .5,
-				vector.Of(2, 0): 0,
-				vector.Of(3, 0): .5,
-				vector.Of(4, 0): .5,
-			},
-		},
-		{
-			name: "solvable",
-			g: game.MakeReadonlyRevealedString("" +
-				".1 \n" +
-				".2 \n" +
-				".1 "),
-			want: map[vector.IntVec2]float64{
-				vector.Of(0, 0): 1,
-				vector.Of(0, 1): 0,
-				vector.Of(0, 2): 1,
 			},
 		},
 		{
@@ -100,6 +85,41 @@ func TestEvaluation(t *testing.T) {
 				vector.Of(3, 1): 0,
 				vector.Of(4, 1): 0,
 				vector.Of(5, 1): 1,
+			},
+		},
+		{
+			name: "1–2+",
+			g: game.MakeReadonlyRevealedString("" +
+				"......\n" +
+				".2....\n" +
+				"1114..\n" +
+				"   2..\n" +
+				"   1.."),
+			want: map[vector.IntVec2]float64{
+				vector.Of(0, 0): 0.3333333333333333,
+				vector.Of(0, 1): 1,
+				vector.Of(1, 0): 0.3333333333333333,
+				vector.Of(2, 0): 0.3333333333333333,
+				vector.Of(2, 1): .5,
+				vector.Of(3, 1): .5,
+				vector.Of(4, 1): 1,
+				vector.Of(4, 2): 1,
+				vector.Of(4, 3): 1,
+				vector.Of(4, 4): 0,
+			},
+		},
+		{
+			name: "11111",
+			g: game.MakeReadonlyRevealedString("" +
+				".....\n" +
+				"11111\n" +
+				"     "),
+			want: map[vector.IntVec2]float64{
+				vector.Of(0, 0): .5,
+				vector.Of(1, 0): .5,
+				vector.Of(2, 0): 0,
+				vector.Of(3, 0): .5,
+				vector.Of(4, 0): .5,
 			},
 		},
 		{

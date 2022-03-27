@@ -55,10 +55,6 @@ Need a method to determine an invalid board state to discard results.
 Only count fully resolved boards, as to ensure all future possibilities aren't invalid
 */
 
-/*
-Validator, confirm that each number has either enough unknowns or known bombs to satisfy it
-*/
-
 // ScoreAndFlagDaBoard maps the unknown spaces to an eval
 // 1 == 100% a bomb
 // 0 == 0% a bomb
@@ -94,7 +90,7 @@ func (p *ProbabilityAI) ScoreAndFlagDaBoard(g game.ReadOnlyGame) map[vector.IntV
 }
 
 func (p *ProbabilityAI) evalBoard(g game.ReadOnlyGame, ret map[vector.IntVec2]BombEval) (map[vector.IntVec2]BombEval, bool) {
-	q := queue.FromMap(g.GetAllRevealed())
+	q := queue.FromMapKeys(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
 		if bombCount <= 0 {
@@ -272,6 +268,7 @@ func (p *ProbabilityAI) GetMove(g game.ReadOnlyGame) (vector.IntVec2, bool) {
 	if pos, ok := p.getSimpleMove(g); ok {
 		return pos, true
 	}
+	glog.Info("No simple moves found, calculating possible bomb locations")
 	moves := p.ScoreAndFlagDaBoard(g)
 	if len(moves) > 0 {
 		pos, _ := selectMove(moves)

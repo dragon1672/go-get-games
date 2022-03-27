@@ -1,14 +1,16 @@
 package mmath
 
-func MinInt(a, b int) int {
-	if a < b {
+import "golang.org/x/exp/constraints"
+
+func Max[T constraints.Ordered](a, b T) T {
+	if a > b {
 		return a
 	}
 	return b
 }
 
-func MaxInt(a, b int) int {
-	if a > b {
+func Min[T constraints.Ordered](a, b T) T {
+	if a < b {
 		return a
 	}
 	return b
