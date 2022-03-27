@@ -40,7 +40,12 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]Bom
 		// init to unknowns
 		for pos := range touchingMoves {
 			if _, ok := ret[pos]; !ok {
-				ret[pos] = EvalUnknown
+				if g.Get(pos) == minesweeper.CellBomb {
+					ret[pos] = EvalBomb
+				}
+				if !g.Get(pos).Revealed() {
+					ret[pos] = EvalUnknown
+				}
 			}
 		}
 

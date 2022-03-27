@@ -54,7 +54,7 @@ func Drive() {
 	go func() {
 		//ai := &mineai.RandomAI{}
 		//ai := &safeai.SafeAI{}
-		ai := &probabilityai.ProbabilityAI{}
+		ai := &probabilityai.ProbabilityAI{FlagBombs: true}
 		time.Sleep(time.Second * 10)
 		mineai.AutoPlay(ai, g, time.Millisecond*500)
 	}()

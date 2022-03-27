@@ -133,7 +133,7 @@ func TestEvaluation(t *testing.T) {
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
 			ai := &ProbabilityAI{}
-			got := ai.ScoreAndFlagDaBoard(tc.g)
+			got := ai.ScoreDaBoard(tc.g)
 			f.Assert(t, got).Eq(tc.want, "should return proper value")
 		})
 	}

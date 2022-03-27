@@ -18,7 +18,13 @@ const (
 	EvalSafe
 )
 
-type ProbabilityAI struct{}
+type ProbabilityAI struct {
+	// FlagBombs will flag positive bomb locations in the game state
+	FlagBombs bool
+
+	// TrustGameFlags will consider flagged positions as positive bombs instead of re-calculating
+	TrustGameFlags bool
+}
 
 /*
 Desired calculation
@@ -56,16 +62,16 @@ Need a method to determine an invalid board state to discard results.
 Only count fully resolved boards, as to ensure all future possibilities aren't invalid
 */
 
-// ScoreAndFlagDaBoard maps the unknown spaces to an eval
+// ScoreDaBoard maps the unknown spaces to an eval
 // 1 == 100% a bomb
 // 0 == 0% a bomb
 // .5 == 50% a bomb
-func (p *ProbabilityAI) ScoreAndFlagDaBoard(g minesweeper.ReadOnlyGame) map[vector.IntVec2]float64 {
+func (p *ProbabilityAI) ScoreDaBoard(g minesweeper.ReadOnlyGame) map[vector.IntVec2]float64 {
 	m, ok := p.evalBoard(g, make(map[vector.IntVec2]BombEval))
 	if !ok {
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
 	}
-	possibilities := p.resolveUnknowns(g, m)
+	possibilities := p.resolveUnknowns(0, g, m)
 	bombCount := make(map[vector.IntVec2]int)
 	ret := make(map[vector.IntVec2]float64)
 	for pi, possibility := range possibilities {
@@ -105,6 +111,9 @@ func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.Int
 		for pos := range touchingMoves {
 			if _, ok := ret[pos]; !ok {
 				if g.Get(pos) == minesweeper.CellBomb {
+					ret[pos] = EvalBomb
+				}
+				if p.TrustGameFlags && g.Get(pos) == minesweeper.CellFlag {
 					ret[pos] = EvalBomb
 				}
 				if !g.Get(pos).Revealed() {
@@ -182,7 +191,7 @@ func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.Int
 	return ret, true
 }
 
-func (p *ProbabilityAI) resolveUnknowns(g minesweeper.ReadOnlyGame, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
+func (p *ProbabilityAI) resolveUnknowns(depth int, g minesweeper.ReadOnlyGame, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
 	fullyResolved := true
 	for _, v := range m {
 		if v == EvalUnknown {
@@ -191,6 +200,7 @@ func (p *ProbabilityAI) resolveUnknowns(g minesweeper.ReadOnlyGame, m map[vector
 		}
 	}
 	if fullyResolved {
+		glog.V(2).Infof("Solution discovered at depth %d", depth)
 		return []map[vector.IntVec2]BombEval{dup(m)}
 	}
 
@@ -206,7 +216,7 @@ func (p *ProbabilityAI) resolveUnknowns(g minesweeper.ReadOnlyGame, m map[vector
 		futures = append(futures, c)
 		go func() {
 			if mm, ok := p.evalBoard(g, mm); ok {
-				c <- p.resolveUnknowns(g, mm)
+				c <- p.resolveUnknowns(depth+1, g, mm)
 			} else {
 				c <- nil
 			}
@@ -265,13 +275,24 @@ func (p *ProbabilityAI) getSimpleMove(g minesweeper.ReadOnlyGame) (vector.IntVec
 	return ret, false
 }
 
-func (p *ProbabilityAI) GetMove(g minesweeper.ReadOnlyGame) (vector.IntVec2, bool) {
+func (p *ProbabilityAI) GetMove(g *minesweeper.Game) (vector.IntVec2, bool) {
 	if pos, ok := p.getSimpleMove(g); ok {
 		return pos, true
 	}
 	glog.Info("No simple moves found, calculating possible bomb locations")
-	moves := p.ScoreAndFlagDaBoard(g)
+	// Readonly has faster lookup performance
+	moves := p.ScoreDaBoard(g.SnapshotReadonly())
 	if len(moves) > 0 {
+		if p.FlagBombs {
+			for pos, danger := range moves {
+				if danger == 1 {
+					g.SetFlagged(pos)
+				}
+				if danger == 0 {
+					g.SetSafe(pos)
+				}
+			}
+		}
 		pos, _ := selectMove(moves)
 		return pos, true
 	}
