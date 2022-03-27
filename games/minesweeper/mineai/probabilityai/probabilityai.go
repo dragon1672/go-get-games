@@ -230,8 +230,8 @@ func dup(m map[vector.IntVec2]BombEval) map[vector.IntVec2]BombEval {
 
 func getSurrounding(g game.ReadOnlyGame, p vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
-	vector.IterateSurroundingInclusive(p, func(pos vector.IntVec2) {
-		if g.ValidPos(pos) && pos != p {
+	vector.IterateSurroundingExclusive(p, func(pos vector.IntVec2) {
+		if g.ValidPos(pos) {
 			ret[pos] = true
 		}
 	})

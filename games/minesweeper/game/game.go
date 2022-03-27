@@ -260,8 +260,7 @@ func (g *Game) ensureGen(pos vector.IntVec2) {
 	if g.bombs == nil {
 		discouragedPositions := []vector.IntVec2{pos}
 		if g.bigOpening {
-			discouragedPositions = []vector.IntVec2{}
-			vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
+			vector.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
 				discouragedPositions = append(discouragedPositions, pos)
 			})
 		}
@@ -281,12 +280,8 @@ func (g *Game) calculateAsState(pos vector.IntVec2) CellState {
 func (g *Game) calcNum(pos vector.IntVec2) int {
 	g.ensureGen(pos)
 	bombCount := 0
-	vector.IterateSurroundingInclusive(pos, func(toCheck vector.IntVec2) {
-		// skip current pos
-		if toCheck.X == pos.X && toCheck.Y == pos.Y {
-			return
-		}
-		if b := g.bombs[toCheck]; b {
+	vector.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
+		if b := g.bombs[pos]; b {
 			bombCount++
 		}
 	})
