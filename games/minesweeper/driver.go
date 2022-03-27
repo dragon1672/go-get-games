@@ -3,32 +3,32 @@ package minesweeper
 import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
-	"github.com/dragon162/go-get-games/games/minesweeper/game"
-	"github.com/dragon162/go-get-games/games/minesweeper/game/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/probabilityai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/safeai"
+	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
+	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
 	"sync"
 	"time"
 )
 
-// Drive starts a new bugs game
+// Drive starts a new bugs minesweeper
 func Drive() {
 
 	a := app.New()
 	w := a.NewWindow("Mines!")
 
 	/*
-		g := game.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+		g := minesweeper.MakeFromGenerator(gamegen.MakeGameGenFromString("" +
 			"*1 \n" +
 			"22 \n" +
 			"*1 "))
 		//*/
-	//g := game.MakeFromGenerator(gamegen.ExpertGame)
-	//g := game.MakeFromGenerator(gamegen.InsaneGame)
-	g := game.MakeFromGenerator(&game.GameGenerator{Width: 10, Height: 10, BigOpening: true, Gen: gamegen.InsaneDifficulty})
-	//g := game.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
+	//g := minesweeper.MakeFromGenerator(gamegen.ExpertGame)
+	//g := minesweeper.MakeFromGenerator(gamegen.InsaneGame)
+	g := minesweeper.MakeFromGenerator(&minesweeper.GameGenerator{Width: 10, Height: 10, BigOpening: true, Gen: gamegen.InsaneDifficulty})
+	//g := minesweeper.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(
 		ui.MakeAndSyncRenderableBoard(g).CanvasObj(),
@@ -41,7 +41,7 @@ func Drive() {
 			FlagSafe:  true,
 		}
 		processing := sync.Mutex{}
-		g.ChangeEvent.Subscribe(func(data game.ChangeEventData) {
+		g.ChangeEvent.Subscribe(func(data minesweeper.ChangeEventData) {
 			if processing.TryLock() {
 				ai.ScoreAndFlagDaBoard(g)
 				processing.Unlock()

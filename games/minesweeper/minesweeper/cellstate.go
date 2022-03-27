@@ -1,4 +1,4 @@
-package game
+package minesweeper
 
 import "github.com/golang/glog"
 

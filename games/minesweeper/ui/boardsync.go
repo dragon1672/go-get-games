@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fyne.io/fyne/v2/theme"
-	"github.com/dragon162/go-get-games/games/minesweeper/game"
+	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
 	"github.com/dragon162/go-get-games/ui/buttongrid"
 )
@@ -25,27 +25,27 @@ var (
 	n9Resource     = theme.NewThemedResource(assets.N9Icon)
 )
 
-var ch2resource = map[game.CellState]*theme.ThemedResource{
-	game.CellBomb:      bombResource,
-	game.CellFlag:      signalResource,
-	game.CellEmpty:     emptyResource,
-	game.CellMaybeBomb: tankResource,
-	game.CellSafe:      targetResource,
-	game.CellN0:        n0Resource,
-	game.CellN1:        n1Resource,
-	game.CellN2:        n2Resource,
-	game.CellN3:        n3Resource,
-	game.CellN4:        n4Resource,
-	game.CellN5:        n5Resource,
-	game.CellN6:        n6Resource,
-	game.CellN7:        n7Resource,
-	game.CellN8:        n8Resource,
-	game.CellN9:        n9Resource,
+var ch2resource = map[minesweeper.CellState]*theme.ThemedResource{
+	minesweeper.CellBomb:      bombResource,
+	minesweeper.CellFlag:      signalResource,
+	minesweeper.CellEmpty:     emptyResource,
+	minesweeper.CellMaybeBomb: tankResource,
+	minesweeper.CellSafe:      targetResource,
+	minesweeper.CellN0:        n0Resource,
+	minesweeper.CellN1:        n1Resource,
+	minesweeper.CellN2:        n2Resource,
+	minesweeper.CellN3:        n3Resource,
+	minesweeper.CellN4:        n4Resource,
+	minesweeper.CellN5:        n5Resource,
+	minesweeper.CellN6:        n6Resource,
+	minesweeper.CellN7:        n7Resource,
+	minesweeper.CellN8:        n8Resource,
+	minesweeper.CellN9:        n9Resource,
 }
 
-func MakeAndSyncRenderableBoard(g *game.Game) *buttongrid.RenderableBoard {
+func MakeAndSyncRenderableBoard(g *minesweeper.Game) *buttongrid.RenderableBoard {
 	bg := buttongrid.MakeRenderableBoard(g.Width(), g.Height(), emptyResource)
-	g.ChangeEvent.Subscribe(func(data game.ChangeEventData) {
+	g.ChangeEvent.Subscribe(func(data minesweeper.ChangeEventData) {
 		if b, ok := bg.GetButton(data.Pos); ok {
 			if i, ok := ch2resource[data.Val]; ok {
 				b.SetIcon(i)

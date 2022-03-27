@@ -1,7 +1,7 @@
-package game
+package minesweeper
 
 import (
-	"github.com/dragon162/go-get-games/games/minesweeper/game/gamegen"
+	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper/gamegen"
 	"testing"
 
 	"github.com/dragon162/go-get-games/games/common/vector"

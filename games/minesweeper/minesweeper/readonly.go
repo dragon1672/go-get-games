@@ -1,4 +1,4 @@
-package game
+package minesweeper
 
 import (
 	"github.com/dragon162/go-get-games/games/common/vector"

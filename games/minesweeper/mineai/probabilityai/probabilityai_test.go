@@ -2,26 +2,20 @@ package probabilityai
 
 import (
 	"github.com/dragon162/go-get-games/games/common/vector"
-	"github.com/dragon162/go-get-games/games/minesweeper/game"
+	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/pellared/fluentassert/f"
 	"testing"
 )
 
-func MakeGameAndReveal(pos vector.IntVec2, gen *game.GameGenerator) *game.Game {
-	g := game.MakeFromGenerator(gen)
-	g.Reveal(pos)
-	return g
-}
-
 func TestEvaluation(t *testing.T) {
 	tcs := []struct {
 		name string
-		g    game.ReadOnlyGame
+		g    minesweeper.ReadOnlyGame
 		want map[vector.IntVec2]float64
 	}{
 		{
 			name: "solvable",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				".1 \n" +
 				".2 \n" +
 				".1 "),
@@ -33,7 +27,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{ // TODO snag more examples from https://minesweeper.online/help/patterns
 			name: "B1",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				"  1..\n" +
 				"  2..\n" +
 				"  3..\n" +
@@ -52,7 +46,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{
 			name: "1–1+",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				"......\n" +
 				".2....\n" +
 				"1111..\n" +
@@ -73,7 +67,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{
 			name: "1–2",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				"......\n" +
 				"......\n" +
 				"121111\n" +
@@ -89,7 +83,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{
 			name: "1–2+",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				"......\n" +
 				".2....\n" +
 				"1114..\n" +
@@ -110,7 +104,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{
 			name: "11111",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				".....\n" +
 				"11111\n" +
 				"     "),
@@ -124,7 +118,7 @@ func TestEvaluation(t *testing.T) {
 		},
 		{
 			name: "1–3–1 corner",
-			g: game.MakeReadonlyRevealedString("" +
+			g: minesweeper.MakeReadonlyRevealedString("" +
 				"......\n" +
 				"......\n" +
 				"2113..\n" +

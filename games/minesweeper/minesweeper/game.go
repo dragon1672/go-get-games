@@ -1,4 +1,4 @@
-package game
+package minesweeper
 
 import (
 	"github.com/dragon162/go-get-games/games/common/events"
@@ -10,6 +10,7 @@ import (
 
 type annotation int64
 
+//goland:noinspection GoUnusedConst
 const (
 	annotationUnset annotation = iota
 	annotationFlag
