@@ -55,12 +55,7 @@ func (g *readonlyCopy) Get(pos vector.IntVec2) CellState {
 }
 
 func (g *readonlyCopy) GetAllRevealed() map[vector.IntVec2]CellState {
-	// make a copy
-	ret := make(map[vector.IntVec2]CellState)
-	for key, val := range g.revealed {
-		ret[key] = val
-	}
-	return ret
+	return g.revealed
 }
 
 func MakeReadOnly(width, height, bombCount int, revealed map[vector.IntVec2]CellState) ReadOnlyGame {

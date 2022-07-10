@@ -279,7 +279,20 @@ func (p *ProbabilityAI) GetMove(g *minesweeper.Game) (vector.IntVec2, bool) {
 	if pos, ok := p.getSimpleMove(g); ok {
 		return pos, true
 	}
-	glog.Info("No simple moves found, calculating possible bomb locations")
+	glog.Info("No simple moves found")
+	if p.TrustGameFlags {
+		glog.Info("Checking any spots marked as safe")
+		for x := 0; x < g.Width(); x++ {
+			for y := 0; y < g.Height(); y++ {
+				pos := vector.Of(x, y)
+				if g.Get(pos) == minesweeper.CellSafe {
+					return pos, true
+				}
+			}
+		}
+	}
+
+	glog.Info("Calculating possible bomb locations")
 	// Readonly has faster lookup performance
 	moves := p.ScoreDaBoard(g.SnapshotReadonly())
 	if len(moves) > 0 {
