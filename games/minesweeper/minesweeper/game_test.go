@@ -1,7 +1,6 @@
 package minesweeper
 
 import (
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper/gamegen"
 	"testing"
 
 	"github.com/dragon162/go-get-games/games/common/vector"
@@ -25,7 +24,7 @@ func TestGameCalcNum(t *testing.T) {
 	}{
 		{
 			name: "empty",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				"   \n" +
 				"   ")),
@@ -34,7 +33,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "out of bounds",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				"   \n" +
 				"   ")),
@@ -43,7 +42,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "direct on",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				" * \n" +
 				"   ")),
@@ -52,7 +51,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "1 above",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				" * \n" +
 				"   \n" +
 				"   ")),
@@ -61,7 +60,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "1 side",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				"  *\n" +
 				"   ")),
@@ -70,7 +69,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "1 corner",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"  *\n" +
 				"   \n" +
 				"   ")),
@@ -79,7 +78,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "multiple each direction",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"***\n" +
 				"*  \n" +
 				"   ")),
@@ -88,7 +87,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "multiple each direction pt 2",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				"  *\n" +
 				"***")),
@@ -97,7 +96,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "all around",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"***\n" +
 				"* *\n" +
 				"***")),
@@ -106,7 +105,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "solid",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"***\n" +
 				"***\n" +
 				"***")),
@@ -115,7 +114,7 @@ func TestGameCalcNum(t *testing.T) {
 		},
 		{
 			name: "out of bounds touching",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"***\n" +
 				"***\n" +
 				"***")),
@@ -140,7 +139,7 @@ func TestReveal(t *testing.T) {
 	}{
 		{
 			name: "empty",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"   \n" +
 				"   \n" +
 				"   ")),
@@ -153,7 +152,7 @@ func TestReveal(t *testing.T) {
 		},
 		{
 			name: "bomb reveal",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"111\n" +
 				"1*1\n" +
 				"111")),
@@ -164,7 +163,7 @@ func TestReveal(t *testing.T) {
 		},
 		{
 			name: "single reveal",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"*1 \n" +
 				"11 \n" +
 				"   ")),
@@ -175,7 +174,7 @@ func TestReveal(t *testing.T) {
 		},
 		{
 			name: "multi reveal",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"*1 \n" +
 				"11 \n" +
 				"   ")),
@@ -188,7 +187,7 @@ func TestReveal(t *testing.T) {
 		},
 		{
 			name: "multi reveal hides",
-			game: MakeFromGenerator(gamegen.MakeGameGenFromString("" +
+			game: MakeFromGenerator(MakeGameGenFromString("" +
 				"*1 \n" +
 				"22 \n" +
 				"*1 ")),

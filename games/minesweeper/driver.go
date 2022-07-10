@@ -7,7 +7,6 @@ import (
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/probabilityai"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai/safeai"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper/gamegen"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui"
 	"sync"
 	"time"
@@ -27,7 +26,7 @@ func Drive() {
 		//*/
 	//g := minesweeper.MakeFromGenerator(gamegen.ExpertGame)
 	//g := minesweeper.MakeFromGenerator(gamegen.InsaneGame)
-	g := minesweeper.MakeFromGenerator(&minesweeper.GameGenerator{Width: 10, Height: 10, BigOpening: true, Gen: gamegen.InsaneDifficulty})
+	g := minesweeper.MakeFromGenerator(&minesweeper.GameGenerator{Width: 10, Height: 10, BigOpening: true, Gen: minesweeper.InsaneDifficulty})
 	//g := minesweeper.MakeFromGenerator(&gamegen.GameGenerator{Width: 50, Height: 30, Gen: gamegen.IntermediateDifficulty})
 
 	w.SetContent(container.NewVBox(

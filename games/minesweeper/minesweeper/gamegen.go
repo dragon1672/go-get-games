@@ -1,9 +1,8 @@
-package gamegen
+package minesweeper
 
 import (
 	"github.com/dragon162/go-get-games/games/common/sliceutls"
 	"github.com/dragon162/go-get-games/games/common/vector"
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"strings"
 )
 
@@ -15,7 +14,7 @@ import (
 // 10x10: 10% bombs
 //goland:noinspection GoUnusedGlobalVariable
 var (
-	BeginnerGame       = &minesweeper.GameGenerator{Width: 10, Height: 10, Gen: &BombCountGen{BombCount: 10}}
+	BeginnerGame       = &GameGenerator{Width: 10, Height: 10, Gen: &BombCountGen{BombCount: 10}}
 	BeginnerDifficulty = &DifficultyBombGen{BombPercent: .1}
 )
 
@@ -24,25 +23,25 @@ var (
 // 16x16: 15.625% bombs
 //goland:noinspection GoUnusedGlobalVariable
 var (
-	IntermediateGame       = &minesweeper.GameGenerator{Width: 16, Height: 16, Gen: &BombCountGen{BombCount: 40}}
+	IntermediateGame       = &GameGenerator{Width: 16, Height: 16, Gen: &BombCountGen{BombCount: 40}}
 	IntermediateDifficulty = &DifficultyBombGen{BombPercent: .16}
 )
 
 // Expert has 99 mines and is always 16 × 30 (or 30 × 16) : 20.625% bomb
 //goland:noinspection GoUnusedGlobalVariable
 var (
-	ExpertGame       = &minesweeper.GameGenerator{Width: 16, Height: 30, Gen: &BombCountGen{BombCount: 99}}
+	ExpertGame       = &GameGenerator{Width: 16, Height: 30, Gen: &BombCountGen{BombCount: 99}}
 	ExpertDifficulty = &DifficultyBombGen{BombPercent: .2}
 )
 
 //goland:noinspection GoUnusedGlobalVariable
 var (
-	InsaneGame       = &minesweeper.GameGenerator{Width: 50, Height: 30, Gen: InsaneDifficulty}
+	InsaneGame       = &GameGenerator{Width: 50, Height: 30, Gen: InsaneDifficulty}
 	InsaneDifficulty = &DifficultyBombGen{BombPercent: .3}
 )
 
 type StaticBombGen struct {
-	minesweeper.GameStateGenerator
+	GameStateGenerator
 	Bombs map[vector.IntVec2]bool
 }
 
@@ -56,7 +55,7 @@ func (s *StaticBombGen) GenerateBombs(_, _ int, _ ...vector.IntVec2) map[vector.
 }
 
 type BombCountGen struct {
-	minesweeper.GameStateGenerator
+	GameStateGenerator
 	BombCount int
 }
 
@@ -65,7 +64,7 @@ func (b *BombCountGen) GenerateBombs(width, height int, discouragedPositions ...
 }
 
 type DifficultyBombGen struct {
-	minesweeper.GameStateGenerator
+	GameStateGenerator
 	BombPercent float64
 }
 
@@ -81,7 +80,7 @@ func (s *DifficultyBombGen) GenerateBombs(width, height int, discouragedPosition
 // ` * \n`
 // `   \n`
 // `*  \n`
-func MakeGameGenFromString(s string) *minesweeper.GameGenerator {
+func MakeGameGenFromString(s string) *GameGenerator {
 	lines := strings.Split(s, "\n")
 	height := len(lines)
 	var width int
@@ -96,7 +95,7 @@ func MakeGameGenFromString(s string) *minesweeper.GameGenerator {
 			}
 		}
 	}
-	return &minesweeper.GameGenerator{
+	return &GameGenerator{
 		Width:  width,
 		Height: height,
 		Gen:    &StaticBombGen{Bombs: sliceutls.List2Map(bombs...)},
