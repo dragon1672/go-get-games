@@ -1,10 +1,11 @@
 package probabilityai
 
 import (
-	"github.com/dragon162/go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/games/common/vectorutil"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon1672/go-collections/setqueue"
+	"github.com/dragon1672/go-collections/vector"
 	"github.com/golang/glog"
 )
 
@@ -181,7 +182,7 @@ func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.Int
 
 		// Mutated values are unrevealed positions that changed, add back any surrounding numbered positions to re-check
 		for pos := range mutatedVals {
-			vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
+			vectorutil.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
 				if g.ValidPos(pos) && g.Get(pos).Revealed() {
 					q.Add(pos)
 				}
@@ -241,7 +242,7 @@ func dup(m map[vector.IntVec2]BombEval) map[vector.IntVec2]BombEval {
 
 func getSurrounding(g minesweeper.ReadOnlyGame, p vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
-	vector.IterateSurroundingExclusive(p, func(pos vector.IntVec2) {
+	vectorutil.IterateSurroundingExclusive(p, func(pos vector.IntVec2) {
 		if g.ValidPos(pos) {
 			ret[pos] = true
 		}

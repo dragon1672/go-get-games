@@ -6,8 +6,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"github.com/dragon162/go-get-games/games/common/events"
-	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/ui/uibuttons"
+	"github.com/dragon1672/go-collections/vector"
 )
 
 type Board interface {

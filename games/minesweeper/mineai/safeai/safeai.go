@@ -1,10 +1,11 @@
 package safeai
 
 import (
-	"github.com/dragon162/go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/games/common/vectorutil"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon1672/go-collections/setqueue"
+	"github.com/dragon1672/go-collections/vector"
 	"github.com/golang/glog"
 )
 
@@ -87,7 +88,7 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]Bom
 
 		// Add back any surrounding values to be re-checked
 		for pos := range mutatedVals {
-			vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
+			vectorutil.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
 				if g.ValidPos(pos) && g.Get(pos).BombCount() > 0 {
 					q.Add(pos)
 				}
@@ -99,7 +100,7 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]Bom
 
 func getTouchingMoves(g *minesweeper.Game, pos vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
-	vector.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
+	vectorutil.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
 		if g.ValidPos(pos) && !g.Get(pos).Revealed() {
 			ret[pos] = true
 		}

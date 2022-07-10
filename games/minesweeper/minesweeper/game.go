@@ -3,7 +3,8 @@ package minesweeper
 import (
 	"github.com/dragon162/go-get-games/games/common/events"
 	"github.com/dragon162/go-get-games/games/common/sliceutls"
-	"github.com/dragon162/go-get-games/games/common/vector"
+	"github.com/dragon162/go-get-games/games/common/vectorutil"
+	"github.com/dragon1672/go-collections/vector"
 	"github.com/golang/glog"
 	"sync"
 )
@@ -245,7 +246,7 @@ func (g *Game) silentReveal(toCheck ...vector.IntVec2) []ChangeEventData {
 		state := g.calculateAsState(pos)
 		ret = append(ret, g.silentlySet(pos, state))
 		if state == CellN0 {
-			vector.IterateSurroundingInclusive(pos, func(newPos vector.IntVec2) {
+			vectorutil.IterateSurroundingInclusive(pos, func(newPos vector.IntVec2) {
 				if g.ValidPos(newPos) {
 					// add everything including self and let loop handle
 					toCheck = append(toCheck, newPos)
@@ -261,7 +262,7 @@ func (g *Game) ensureGen(pos vector.IntVec2) {
 	if g.bombs == nil {
 		discouragedPositions := []vector.IntVec2{pos}
 		if g.bigOpening {
-			vector.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
+			vectorutil.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
 				discouragedPositions = append(discouragedPositions, pos)
 			})
 		}
@@ -281,7 +282,7 @@ func (g *Game) calculateAsState(pos vector.IntVec2) CellState {
 func (g *Game) calcNum(pos vector.IntVec2) int {
 	g.ensureGen(pos)
 	bombCount := 0
-	vector.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
+	vectorutil.IterateSurroundingExclusive(pos, func(pos vector.IntVec2) {
 		if b := g.bombs[pos]; b {
 			bombCount++
 		}

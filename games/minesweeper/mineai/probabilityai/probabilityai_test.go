@@ -1,8 +1,8 @@
 package probabilityai
 
 import (
-	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
+	"github.com/dragon1672/go-collections/vector"
 	"github.com/pellared/fluentassert/f"
 	"testing"
 )
