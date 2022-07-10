@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	fyne.io/fyne/v2 v2.1.3
+	github.com/dragon1672/go-collections v0.0.0-20220710032135-41f3e1f28e24
 	github.com/golang/glog v1.0.0
 	github.com/pellared/fluentassert v0.1.0
 	golang.org/x/exp v0.0.0-20220325121720-054d8573a5d8

@@ -1,8 +1,9 @@
 package mmath
 
 import (
-	"github.com/pellared/fluentassert/f"
 	"testing"
+
+	"github.com/pellared/fluentassert/f"
 )
 
 func TestMin(t *testing.T) {

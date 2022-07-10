@@ -1,8 +1,9 @@
 package vector
 
 import (
-	"github.com/pellared/fluentassert/f"
 	"testing"
+
+	"github.com/pellared/fluentassert/f"
 )
 
 func TestCreate(t *testing.T) {

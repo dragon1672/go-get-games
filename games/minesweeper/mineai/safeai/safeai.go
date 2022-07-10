@@ -1,10 +1,10 @@
 package safeai
 
 import (
-	"github.com/dragon162/go-get-games/games/common/queue"
 	"github.com/dragon162/go-get-games/games/common/vector"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
+	"github.com/dragon1672/go-collections/setqueue"
 	"github.com/golang/glog"
 )
 
@@ -26,7 +26,7 @@ const (
 // ScoreAndFlagDaBoard maps the unknown spaces to an eval
 func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]BombEval {
 	ret := make(map[vector.IntVec2]BombEval)
-	q := queue.FromMapKeys(g.GetAllRevealed())
+	q := setqueue.FromMapKeys(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
 		if bombCount <= 0 {

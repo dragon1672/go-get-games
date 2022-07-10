@@ -1,8 +1,9 @@
 package events
 
 import (
-	"github.com/pellared/fluentassert/f"
 	"testing"
+
+	"github.com/pellared/fluentassert/f"
 )
 
 func channelEmpty[T any](c chan T) bool {
