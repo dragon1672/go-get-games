@@ -1,9 +1,9 @@
 package probabilityai
 
 import (
+	minesweeper2 "github.com/dragon162/go-get-games/games/minesweeper"
 	"github.com/dragon162/go-get-games/games/minesweeper/common/vectorutil"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon1672/go-collections/setqueue"
 	"github.com/dragon1672/go-collections/vector"
 	"github.com/golang/glog"
@@ -67,7 +67,7 @@ Only count fully resolved boards, as to ensure all future possibilities aren't i
 // 1 == 100% a bomb
 // 0 == 0% a bomb
 // .5 == 50% a bomb
-func (p *ProbabilityAI) ScoreDaBoard(g minesweeper.ReadOnlyGame) map[vector.IntVec2]float64 {
+func (p *ProbabilityAI) ScoreDaBoard(g minesweeper2.ReadOnlyGame) map[vector.IntVec2]float64 {
 	m, ok := p.evalBoard(g, make(map[vector.IntVec2]BombEval))
 	if !ok {
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
@@ -97,7 +97,7 @@ func (p *ProbabilityAI) ScoreDaBoard(g minesweeper.ReadOnlyGame) map[vector.IntV
 	return ret
 }
 
-func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.IntVec2]BombEval) (map[vector.IntVec2]BombEval, bool) {
+func (p *ProbabilityAI) evalBoard(g minesweeper2.ReadOnlyGame, ret map[vector.IntVec2]BombEval) (map[vector.IntVec2]BombEval, bool) {
 	q := setqueue.FromMapKeys(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
 		bombCount := g.Get(pos).BombCount()
@@ -111,10 +111,10 @@ func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.Int
 		// init to unknowns
 		for pos := range touchingMoves {
 			if _, ok := ret[pos]; !ok {
-				if g.Get(pos) == minesweeper.CellBomb {
+				if g.Get(pos) == minesweeper2.CellBomb {
 					ret[pos] = EvalBomb
 				}
-				if p.TrustGameFlags && g.Get(pos) == minesweeper.CellFlag {
+				if p.TrustGameFlags && g.Get(pos) == minesweeper2.CellFlag {
 					ret[pos] = EvalBomb
 				}
 				if !g.Get(pos).Revealed() {
@@ -192,7 +192,7 @@ func (p *ProbabilityAI) evalBoard(g minesweeper.ReadOnlyGame, ret map[vector.Int
 	return ret, true
 }
 
-func (p *ProbabilityAI) resolveUnknowns(depth int, g minesweeper.ReadOnlyGame, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
+func (p *ProbabilityAI) resolveUnknowns(depth int, g minesweeper2.ReadOnlyGame, m map[vector.IntVec2]BombEval) []map[vector.IntVec2]BombEval {
 	fullyResolved := true
 	for _, v := range m {
 		if v == EvalUnknown {
@@ -240,7 +240,7 @@ func dup(m map[vector.IntVec2]BombEval) map[vector.IntVec2]BombEval {
 	return r
 }
 
-func getSurrounding(g minesweeper.ReadOnlyGame, p vector.IntVec2) map[vector.IntVec2]bool {
+func getSurrounding(g minesweeper2.ReadOnlyGame, p vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
 	vectorutil.IterateSurroundingExclusive(p, func(pos vector.IntVec2) {
 		if g.ValidPos(pos) {
@@ -262,7 +262,7 @@ func selectMove(moves map[vector.IntVec2]float64) (vector.IntVec2, float64) {
 	return safestMove, safestVal
 }
 
-func (p *ProbabilityAI) getSimpleMove(g minesweeper.ReadOnlyGame) (vector.IntVec2, bool) {
+func (p *ProbabilityAI) getSimpleMove(g minesweeper2.ReadOnlyGame) (vector.IntVec2, bool) {
 	m, ok := p.evalBoard(g, make(map[vector.IntVec2]BombEval))
 	if !ok {
 		glog.Error("Board State unexpectedly has an error...ignoring that entirely and proceeding")
@@ -276,7 +276,7 @@ func (p *ProbabilityAI) getSimpleMove(g minesweeper.ReadOnlyGame) (vector.IntVec
 	return ret, false
 }
 
-func (p *ProbabilityAI) GetMove(g *minesweeper.Game) (vector.IntVec2, bool) {
+func (p *ProbabilityAI) GetMove(g *minesweeper2.Game) (vector.IntVec2, bool) {
 	if pos, ok := p.getSimpleMove(g); ok {
 		return pos, true
 	}
@@ -286,7 +286,7 @@ func (p *ProbabilityAI) GetMove(g *minesweeper.Game) (vector.IntVec2, bool) {
 		for x := 0; x < g.Width(); x++ {
 			for y := 0; y < g.Height(); y++ {
 				pos := vector.Of(x, y)
-				if g.Get(pos) == minesweeper.CellSafe {
+				if g.Get(pos) == minesweeper2.CellSafe {
 					return pos, true
 				}
 			}

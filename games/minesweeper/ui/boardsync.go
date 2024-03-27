@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fyne.io/fyne/v2/theme"
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
+	minesweeper2 "github.com/dragon162/go-get-games/games/minesweeper"
 	"github.com/dragon162/go-get-games/games/minesweeper/ui/assets"
 	"github.com/dragon162/go-get-games/ui/buttongrid"
 )
@@ -25,27 +25,27 @@ var (
 	n9Resource     = theme.NewThemedResource(assets.N9Icon)
 )
 
-var ch2resource = map[minesweeper.CellState]*theme.ThemedResource{
-	minesweeper.CellBomb:      bombResource,
-	minesweeper.CellFlag:      signalResource,
-	minesweeper.CellEmpty:     emptyResource,
-	minesweeper.CellMaybeBomb: tankResource,
-	minesweeper.CellSafe:      targetResource,
-	minesweeper.CellN0:        n0Resource,
-	minesweeper.CellN1:        n1Resource,
-	minesweeper.CellN2:        n2Resource,
-	minesweeper.CellN3:        n3Resource,
-	minesweeper.CellN4:        n4Resource,
-	minesweeper.CellN5:        n5Resource,
-	minesweeper.CellN6:        n6Resource,
-	minesweeper.CellN7:        n7Resource,
-	minesweeper.CellN8:        n8Resource,
-	minesweeper.CellN9:        n9Resource,
+var ch2resource = map[minesweeper2.CellState]*theme.ThemedResource{
+	minesweeper2.CellBomb:      bombResource,
+	minesweeper2.CellFlag:      signalResource,
+	minesweeper2.CellEmpty:     emptyResource,
+	minesweeper2.CellMaybeBomb: tankResource,
+	minesweeper2.CellSafe:      targetResource,
+	minesweeper2.CellN0:        n0Resource,
+	minesweeper2.CellN1:        n1Resource,
+	minesweeper2.CellN2:        n2Resource,
+	minesweeper2.CellN3:        n3Resource,
+	minesweeper2.CellN4:        n4Resource,
+	minesweeper2.CellN5:        n5Resource,
+	minesweeper2.CellN6:        n6Resource,
+	minesweeper2.CellN7:        n7Resource,
+	minesweeper2.CellN8:        n8Resource,
+	minesweeper2.CellN9:        n9Resource,
 }
 
-func MakeAndSyncRenderableBoard(g *minesweeper.Game) *buttongrid.RenderableBoard {
+func MakeAndSyncRenderableBoard(g *minesweeper2.Game) *buttongrid.RenderableBoard {
 	bg := buttongrid.MakeRenderableBoard(g.Width(), g.Height(), emptyResource)
-	g.ChangeEvent.Subscribe(func(data minesweeper.ChangeEventData) {
+	g.ChangeEvent.Subscribe(func(data minesweeper2.ChangeEventData) {
 		if b, ok := bg.GetButton(data.Pos); ok {
 			if i, ok := ch2resource[data.Val]; ok {
 				b.SetIcon(i)

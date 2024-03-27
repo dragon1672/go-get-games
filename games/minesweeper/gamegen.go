@@ -12,6 +12,7 @@ import (
 // 8x8:   15.625% bombs
 // 9x9:   12.346% bombs
 // 10x10: 10% bombs
+//
 //goland:noinspection GoUnusedGlobalVariable
 var (
 	BeginnerGame       = &GameGenerator{Width: 10, Height: 10, Gen: &BombCountGen{BombCount: 10}}
@@ -21,6 +22,7 @@ var (
 // Intermediate has 40 mines and also varies in size between 13 × 15 and 16 × 16
 // 13x15: 20.512% bombs
 // 16x16: 15.625% bombs
+//
 //goland:noinspection GoUnusedGlobalVariable
 var (
 	IntermediateGame       = &GameGenerator{Width: 16, Height: 16, Gen: &BombCountGen{BombCount: 40}}
@@ -28,6 +30,7 @@ var (
 )
 
 // Expert has 99 mines and is always 16 × 30 (or 30 × 16) : 20.625% bomb
+//
 //goland:noinspection GoUnusedGlobalVariable
 var (
 	ExpertGame       = &GameGenerator{Width: 16, Height: 30, Gen: &BombCountGen{BombCount: 99}}

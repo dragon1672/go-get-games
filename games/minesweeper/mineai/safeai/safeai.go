@@ -1,9 +1,9 @@
 package safeai
 
 import (
+	minesweeper2 "github.com/dragon162/go-get-games/games/minesweeper"
 	"github.com/dragon162/go-get-games/games/minesweeper/common/vectorutil"
 	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
-	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon1672/go-collections/setqueue"
 	"github.com/dragon1672/go-collections/vector"
 	"github.com/golang/glog"
@@ -25,7 +25,7 @@ const (
 )
 
 // ScoreAndFlagDaBoard maps the unknown spaces to an eval
-func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]BombEval {
+func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper2.Game) map[vector.IntVec2]BombEval {
 	ret := make(map[vector.IntVec2]BombEval)
 	q := setqueue.FromMapKeys(g.GetAllRevealed())
 	for pos, ok := q.Pop(); ok; pos, ok = q.Pop() {
@@ -41,7 +41,7 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]Bom
 		// init to unknowns
 		for pos := range touchingMoves {
 			if _, ok := ret[pos]; !ok {
-				if g.Get(pos) == minesweeper.CellBomb {
+				if g.Get(pos) == minesweeper2.CellBomb {
 					ret[pos] = EvalBomb
 				}
 				if !g.Get(pos).Revealed() {
@@ -98,7 +98,7 @@ func (s *SafeAI) ScoreAndFlagDaBoard(g *minesweeper.Game) map[vector.IntVec2]Bom
 	return ret
 }
 
-func getTouchingMoves(g *minesweeper.Game, pos vector.IntVec2) map[vector.IntVec2]bool {
+func getTouchingMoves(g *minesweeper2.Game, pos vector.IntVec2) map[vector.IntVec2]bool {
 	ret := make(map[vector.IntVec2]bool)
 	vectorutil.IterateSurroundingInclusive(pos, func(pos vector.IntVec2) {
 		if g.ValidPos(pos) && !g.Get(pos).Revealed() {
@@ -118,7 +118,7 @@ func selectMove(moves map[vector.IntVec2]BombEval) (vector.IntVec2, bool) {
 	return ret, false
 }
 
-func (s *SafeAI) GetMove(g *minesweeper.Game) (vector.IntVec2, bool) {
+func (s *SafeAI) GetMove(g *minesweeper2.Game) (vector.IntVec2, bool) {
 	if pos, ok := selectMove(s.ScoreAndFlagDaBoard(g)); ok {
 		return pos, true
 	}
