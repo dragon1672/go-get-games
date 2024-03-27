@@ -1,7 +1,7 @@
 package mineai
 
 import (
-	"github.com/dragon162/go-get-games/games/common/sliceutls"
+	"github.com/dragon162/go-get-games/games/minesweeper/common/sliceutls"
 	"github.com/dragon162/go-get-games/games/minesweeper/minesweeper"
 	"github.com/dragon1672/go-collections/vector"
 )

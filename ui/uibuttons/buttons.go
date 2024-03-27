@@ -5,7 +5,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/dragon162/go-get-games/games/common/events"
+	"github.com/dragon162/go-get-games/games/minesweeper/common/events"
 	"image/color"
 )
 
