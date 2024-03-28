@@ -1,8 +1,8 @@
 package minesweeper
 
 import (
-	"github.com/dragon162/go-get-games/games/minesweeper/common/sliceutls"
 	"github.com/dragon1672/go-collections/vector"
+	"github.com/dragon1672/go-get-games/games/minesweeper/common/sliceutls"
 	"strings"
 )
 

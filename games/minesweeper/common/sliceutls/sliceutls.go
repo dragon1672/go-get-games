@@ -1,7 +1,7 @@
 package sliceutls
 
 import (
-	"github.com/dragon162/go-get-games/games/minesweeper/common/mmath"
+	"github.com/dragon1672/go-get-games/games/minesweeper/common/mmath"
 	"math/rand"
 )
 

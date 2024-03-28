@@ -1,8 +1,8 @@
 package mineai
 
 import (
-	"github.com/dragon162/go-get-games/games/minesweeper"
 	"github.com/dragon1672/go-collections/vector"
+	"github.com/dragon1672/go-get-games/games/minesweeper"
 	"github.com/golang/glog"
 	"time"
 )

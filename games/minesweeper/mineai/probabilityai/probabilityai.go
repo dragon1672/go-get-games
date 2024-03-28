@@ -1,11 +1,11 @@
 package probabilityai
 
 import (
-	minesweeper2 "github.com/dragon162/go-get-games/games/minesweeper"
-	"github.com/dragon162/go-get-games/games/minesweeper/common/vectorutil"
-	"github.com/dragon162/go-get-games/games/minesweeper/mineai"
 	"github.com/dragon1672/go-collections/setqueue"
 	"github.com/dragon1672/go-collections/vector"
+	minesweeper2 "github.com/dragon1672/go-get-games/games/minesweeper"
+	"github.com/dragon1672/go-get-games/games/minesweeper/common/vectorutil"
+	"github.com/dragon1672/go-get-games/games/minesweeper/mineai"
 	"github.com/golang/glog"
 )
 
